@@ -4,7 +4,7 @@ import numpy as np
 from matplotlib.colors import LogNorm
 from scipy.optimize import curve_fit
 from fun import do_smd, do_dif, find_peaks, analize_peaks
-
+########## This is a develop branch#########
 pmts=[0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19]
 blw_cut=60
 left=80
