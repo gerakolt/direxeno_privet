@@ -5,16 +5,18 @@ from matplotlib.colors import LogNorm
 from scipy.optimize import curve_fit
 from fun import do_smd, do_dif, find_peaks, analize_peaks
 
-pmts=[0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19]
-blw_cut=60
-left=80
-right=110
-height_cut=26
+blw_cut=80
+left=140
+right=170
+height_cut=25
 d_cut=4
+l=195
+r=264
+zeros=[]
 
-pmts=np.array([0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19])
-pmt=4
-path='/home/gerak/Desktop/DireXeno/pulser_190803_46211/'
+pmts=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+pmt=19
+path='/home/gerak/Desktop/DireXeno/030220/pulser3/'
 Peaks=np.load(path+'Peaks/AllPeaks.npz')['rec']
 SPEpeaks=[]
 try:
@@ -24,11 +26,10 @@ try:
     spe=spe-np.median(spe[:150])
     spe_cut=spe_cut-np.median(spe_cut[:150])
     blw=np.sqrt(np.mean(spe_cut[:150]**2))
-    # copy=np.array(spe_cut)
-    # for peak in find_peaks(np.reshape(copy, (len(copy), 1)), np.array([blw]), pmts):
-    #     SPEpeaks.append(peak)
 except:
+    print('Cant load All SPE file')
     spe=np.zeros(1000)
+    spe_cut=np.zeros(1000)
     SPE=[]
 
 peaks=Peaks[Peaks['pmt']==pmt]
@@ -68,25 +69,27 @@ ax.legend()
 ax=fig.add_subplot(425)
 def func(x, a,b,c):
     return a*np.exp(-0.5*(x-b)**2/c**2)
-ax.hist(peaks['area'], bins=100, range=[0,5000], label='area', histtype='step')
-h, bins,pa=ax.hist(peaks_tdcut['area'], bins=100, range=[0,5000], label='area - t cut', histtype='step')
+ax.hist(peaks['area'], bins=100, range=[0,3000], label='area', histtype='step')
+h, bins,pa=ax.hist(peaks_tdcut['area'], bins=100, range=[0,3000], label='area - t cut', histtype='step')
 h_area=np.array(h)
 x=0.5*(bins[1:]+bins[:-1])
 x_area=np.array(x)
-rng_area=np.nonzero(np.logical_and(x>400, x<1500))
+rng_area=np.nonzero(np.logical_and(x>500, x<2500))
 p0=[np.amax(h[rng_area]), x[rng_area][np.argmax(h[rng_area])], 0.5*x[rng_area][np.argmax(h[rng_area])]]
 try:
     p_area, cov=curve_fit(func, x[rng_area], h[rng_area], p0=p0)
     ax.plot(x[rng_area], func(x[rng_area], *p_area), 'r--', label=r'$\bar{A}=$'+'{:3.2f}'.format(p_area[1]))
     ax.legend()
+    factor=-np.sum(spe_cut[l:r])/p_area[1]
 except:
-    print('No area fit')
+    factor=1
+    print('No area fit - No factor')
 ax.set_yscale('log')
 ax.legend()
 
 ax=fig.add_subplot(426)
-ax.hist(peaks['h'], bins=100, range=[0,200], label='height', histtype='step')
-h,bins, pa=ax.hist(peaks_tdcut['h'], bins=100, range=[0,200], label='height - t cut', histtype='step')
+ax.hist(peaks['h'], bins=100, range=[0,500], label='height', histtype='step')
+h,bins, pa=ax.hist(peaks_tdcut['h'], bins=100, range=[0,500], label='height - t cut', histtype='step')
 x=0.5*(bins[1:]+bins[:-1])
 rng=np.nonzero(np.logical_and(x>25, x<70))
 p0=[np.amax(h[rng]), x[rng][np.argmax(h[rng])], 0.5*x[rng][np.argmax(h[rng])]]
@@ -106,12 +109,8 @@ ax.plot(spe, 'k.', label='Sum of {} wfs'.format(len(SPE)))
 ax.plot(spe_cut, 'g.')
 ax.fill_between(np.arange(1000), y1=-np.sqrt(np.mean(spe_cut[:150]**2)), y2=0)
 ax.axhline(y=0, xmin=0, xmax=1, color='r')
-l=195
-r=244
-factor=-np.sum(spe_cut[l:r])/p_area[1]
 ax.fill_between(np.linspace(l, r, 100), y1=np.amin(spe_cut), y2=0, alpha=0.2, label='{} PEs'.format(factor))
 ax.legend()
-# factor=1
 # for peak in SPEpeaks:
 #     ax.fill_between(np.linspace(peak.init, peak.fin, 100), y1=-peak.height, y2=0, alpha=0.2, label='{} PEs'.format(np.round(peak.area/p[1])))
 #     if peak.area/p[1]>factor:
@@ -120,7 +119,7 @@ ax.legend()
 
 
 try:
-    np.savez(path+'PMT{}/AllSPEs'.format(pmt), SPE=SPE, factor=factor, zeros=np.arange(400,1000), Spe=p_area[2]/p_area[1])
+    np.savez(path+'PMT{}/AllSPEs'.format(pmt), SPE=SPE, factor=factor, zeros=zeros, Spe=p_area[2]/p_area[1], area_x=x_area, area_y=h_area)
     print('Saved factor')
 except:
     temp=1
@@ -140,31 +139,31 @@ def make_P(Spe, ns):
             P[i,j]=np.sum(P[:i+1,1]*np.flip(P[:i+1,j-1]))
     return P[ns,:]
 
-ns=[0,1,2,3,4,5,6]
-P=make_P(p_area[2]/p_area[1], ns)
-
-fig=plt.figure()
-ax=fig.add_subplot(221)
-ax.plot(x_area/p_area[1], h_area, 'k.')
-ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
-ax.plot(ns, P[:,1]/np.amax(P[:,1])*p_area[0], 'go', label='P1')
-ax.legend()
-
-ax=fig.add_subplot(222)
-ax.plot(x_area/p_area[1], h_area, 'k.')
-ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
-ax.plot(ns, P[:,2]/np.amax(P[:,2])*p_area[0], 'go', label='P2')
-ax.legend()
-
-ax=fig.add_subplot(223)
-ax.plot(x_area/p_area[1], h_area, 'k.')
-ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
-ax.plot(ns, P[:,3]/np.amax(P[:,3])*p_area[0], 'go', label='P3')
-ax.legend()
-
-ax=fig.add_subplot(224)
-ax.plot(x_area/p_area[1], h_area, 'k.')
-ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
-ax.plot(ns, P[:,4]/np.amax(P[:,4])*p_area[0], 'go', label='P4')
-ax.legend()
-plt.show()
+# ns=[0,1,2,3,4,5,6]
+# P=make_P(p_area[2]/p_area[1], ns)
+#
+# fig=plt.figure()
+# ax=fig.add_subplot(221)
+# ax.plot(x_area/p_area[1], h_area, 'k.')
+# ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
+# ax.plot(ns, P[:,1]/np.amax(P[:,1])*p_area[0], 'go', label='P1')
+# ax.legend()
+#
+# ax=fig.add_subplot(222)
+# ax.plot(x_area/p_area[1], h_area, 'k.')
+# ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
+# ax.plot(ns, P[:,2]/np.amax(P[:,2])*p_area[0], 'go', label='P2')
+# ax.legend()
+#
+# ax=fig.add_subplot(223)
+# ax.plot(x_area/p_area[1], h_area, 'k.')
+# ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
+# ax.plot(ns, P[:,3]/np.amax(P[:,3])*p_area[0], 'go', label='P3')
+# ax.legend()
+#
+# ax=fig.add_subplot(224)
+# ax.plot(x_area/p_area[1], h_area, 'k.')
+# ax.plot(x_area[rng_area]/p_area[1], func(x_area[rng_area]/p_area[1], *[p_area[0], 1, p_area[2]/p_area[1]]), 'r--')
+# ax.plot(ns, P[:,4]/np.amax(P[:,4])*p_area[0], 'go', label='P4')
+# ax.legend()
+# plt.show()

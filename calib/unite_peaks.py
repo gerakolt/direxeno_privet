@@ -4,7 +4,7 @@ import sys
 import os
 import matplotlib.pyplot as plt
 
-path='/home/gerak/Desktop/DireXeno/pulser_190803_46211/Peaks/'
+path='/home/gerak/Desktop/DireXeno/030220/pulser3/Peaks/'
 rec=[]
 for filename in os.listdir(path):
     if filename.startswith('peaks'):
