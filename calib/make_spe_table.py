@@ -30,6 +30,11 @@ id0=id
 np.fromfile(file, np.float32, (PMT_num+4)*(time_samples+2)*id)
 start_time = time.time()
 j=0
+
+rec=np.recarray(5000, dtype=[
+    ('id', 'i8'),
+    ('init10', 'i8'),
+    ])
 while id<1e6:
     if id%100==0:
         print('Event number {} ({} files per sec). {} file were saved.'.format(id, 100/(time.time()-start_time), j))
@@ -49,11 +54,12 @@ while id<1e6:
     for peak in find_peaks(np.reshape(wf, (len(wf), 1)), np.array([blw]), pmts):
         if peak.init10-trig>left and peak.init10-trig<right and peak.maxi-peak.init10>d_cut:
             SPE[j]=np.roll(wf_copy, 200-peak.init10)
+            rec[j]=id, peak.init10
             j+=1
             if j==len(SPE[:,0]):
-                np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id), SPE=SPE)
+                np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id), SPE=SPE, rec=rec)
                 j=0
                 id0=id+1
             break
     id+=1
-np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id-1), SPE=SPE[:j-1])
+np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id-1), SPE=SPE[:j-1], rec=rec[:j-1])
