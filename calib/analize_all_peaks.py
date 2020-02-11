@@ -7,15 +7,16 @@ from fun import do_smd, do_dif, find_peaks, analize_peaks
 ########## This is a develop branch#########
 pmts=[0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19]
 blw_cut=60
-left=80
-right=110
+left=110
+right=170
 height_cut=26
 d_cut=4
 
 pmts=np.array([0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19])
-pmt=4
-path='/home/gerak/Desktop/DireXeno/pulser_190803_46211/'
-Peaks=np.load(path+'Peaks/AllPeaks.npz')['rec']
+pmt=0
+# path='/home/gerak/Desktop/DireXeno/pulser_190803_46211/'
+path='../../../850V_46213/Peaks/'
+Peaks=np.load(path+'AllPeaks.npz')['rec']
 SPEpeaks=[]
 try:
     SPE=np.load(path+'PMT{}/AllSPEs.npz'.format(pmt))['SPE']
@@ -30,6 +31,7 @@ try:
 except:
     spe=np.zeros(1000)
     SPE=[]
+    print('Cant open AllSPEs from {}'.format(pmt))
 
 peaks=Peaks[Peaks['pmt']==pmt]
 peaks_tcut=peaks[(peaks['blw']<blw_cut) & (peaks['t']<right) & (peaks['t']>left)]
@@ -103,13 +105,16 @@ ax.legend()
 
 ax=fig.add_subplot(4,1,4)
 ax.plot(spe, 'k.', label='Sum of {} wfs'.format(len(SPE)))
-ax.plot(spe_cut, 'g.')
-ax.fill_between(np.arange(1000), y1=-np.sqrt(np.mean(spe_cut[:150]**2)), y2=0)
+try:
+    ax.plot(spe_cut, 'g.')
+    ax.fill_between(np.linspace(l, r, 100), y1=np.amin(spe_cut), y2=0, alpha=0.2, label='{} PEs'.format(factor))
+    factor=-np.sum(spe_cut[l:r])/p_area[1]
+except:
+    factor=1
+    print('Cant plot spe_cut')
 ax.axhline(y=0, xmin=0, xmax=1, color='r')
 l=195
 r=244
-factor=-np.sum(spe_cut[l:r])/p_area[1]
-ax.fill_between(np.linspace(l, r, 100), y1=np.amin(spe_cut), y2=0, alpha=0.2, label='{} PEs'.format(factor))
 ax.legend()
 # factor=1
 # for peak in SPEpeaks:
@@ -123,7 +128,7 @@ try:
     np.savez(path+'PMT{}/AllSPEs'.format(pmt), SPE=SPE, factor=factor, zeros=np.arange(400,1000), Spe=p_area[2]/p_area[1])
     print('Saved factor')
 except:
-    temp=1
+    print('didnt save SPE and factor and Spe')
 plt.show()
 
 
