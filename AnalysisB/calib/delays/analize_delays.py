@@ -25,4 +25,4 @@ for i, dt in enumerate(dT):
     # plt.bar(x, h, label=names[i])
     # plt.legend()
     # plt.show()
-    np.savez(path+'delay_hist{}'.format(names[i]), h=h, x=x, a=p[0], m=[-2], s=[-1])
+    np.savez(path+'delay_hist{}'.format(names[i]), h=h, x=x, a=p[0], m=p[-2], s=p[-1])

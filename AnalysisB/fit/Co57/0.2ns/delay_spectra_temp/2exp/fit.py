@@ -149,15 +149,13 @@ def L(p):
         print(rec)
     return -l
 
-# rec[0]=([44.10656898, 44.16785627], [2.40187361, 2.05004474], [0.88833944, 1.11088245], [0.04048149, 0.04177063], [5.64966695e-05, 2.44157508e-05], 0.66410346, 31.87824534, 367.91330633, 460.48414159)
 rec[0]=([33.20158253, 25.29476026, 20.72751616, 33.59451679, 33.53686614, 54.68329379], [20260.25388504, 29150.92321062, 52534.96147846, 37853.4798459 , 15756.64552532, 26379.20016521],
  [25.56333621, 24.13766518, 23.58918014, 24.51682068, 23.94002462, 22.22005736], [1.31440546, 1.43426818, 1.26274381, 0.54548308, 0.83098988, 1.59084966], 0.10533943, 0.3040308, 33.13975893)
 # p=minimize(L, rec_to_p(rec), method='Nelder-Mead', options={'disp':True, 'maxfev':100000})
 # rec=p_to_rec(p.x)
 
 m=Model(rec['NQ'][0], rec['T'][0], np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
-# s=Sim(rec['NQ'][0], rec['T'][0], 5, np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
-s=m
+s=Sim(rec['NQ'][0], rec['T'][0], 5, np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
 x=np.arange(1000)/5
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):
@@ -194,6 +192,11 @@ x=np.arange(1000)/5
 plt.figure()
 plt.plot(x, np.sum(G.T*np.arange(np.shape(G)[0]), axis=1), 'ko', label='Global Data')
 GS=Global_Sim(rec['NQ'][0], rec['T'][0], 5, np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
+f=subGlobal_Sim(rec['NQ'][0], rec['T'][0], 5, np.zeros(len(pmts)), rec['F'][0], 0, rec['Tf'][0], rec['Ts'][0], rec['St'][0])
+s=subGlobal_Sim(rec['NQ'][0], rec['T'][0], 5, np.zeros(len(pmts)), 0, 1-rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
+
 plt.plot(x, np.sum(G[:,0])*np.sum(GS.T*np.arange(np.shape(G)[0]), axis=1), 'r-.', label='Global 2 exp sim')
+plt.plot(x, np.sum(G[:,0])*np.sum(f.T*np.arange(np.shape(G)[0]), axis=1), 'g-.', label='Fast')
+plt.plot(x, np.sum(G[:,0])*np.sum(s.T*np.arange(np.shape(G)[0]), axis=1), 'b-.', label='Slow')
 
 plt.show()

@@ -9,6 +9,7 @@ class WaveForm:
 class Hit:
     def __init__(self, init, fin):
         self.init=init
+        self.init10=0
         self.fin=fin
         self.groups=[]
         self.area=0

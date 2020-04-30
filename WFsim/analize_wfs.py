@@ -5,11 +5,11 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
-pmt=4
+pmt=1
 rec=np.load('PMT{}/simWFs.npz'.format(pmt))['hits']
 blw=rec['blw'][np.unique(rec['id'], return_index=True)[1]]
-blw_cut=40
-height_cut=100
+blw_cut=60
+height_cut=150
 
 init=[]
 h=[]
@@ -27,7 +27,7 @@ ax.legend()
 
 ax=fig.add_subplot(222)
 ax.hist(rec['init'], bins=100, label='init', histtype='step')
-ax.hist(init, bins=100, label='the init', histtype='step')
+ax.hist(init, bins=100, label='init over height cut', histtype='step')
 ax.legend()
 
 ax=fig.add_subplot(223)
@@ -37,7 +37,7 @@ ax.axvline(x=height_cut, ymin=0, ymax=1, color='k')
 ax.legend()
 
 ax=fig.add_subplot(224)
-ax.hist2d(rec['init'], rec['height'], bins=[100,100], range=[[0,1000], [0,400]], norm=LogNorm())
+ax.hist2d(rec['init'], rec['height'], bins=[100,100], range=[[0,1000], [0,600]], norm=LogNorm())
 ax.axhline(y=height_cut, xmin=0, xmax=1, color='k')
 ax.legend()
 

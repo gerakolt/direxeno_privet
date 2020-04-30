@@ -45,7 +45,6 @@ for filename in os.listdir(path):
         os.remove(path+filename)
 np.savez(path+'recon{}'.format(id), rec=Rec[:j-1], WFs=WFs, recon_WFs=recon_WFs)
 rec=Rec[:j-1]
-# rec=rec[np.all(rec['init_wf'], axis=1)>init_cut]
 
 fig, ax=plt.subplots(2,3)
 fig.subplots_adjust(wspace=0, hspace=0)
@@ -66,6 +65,23 @@ for i in range(len(pmts)):
     np.ravel(ax)[i].legend(fontsize=15)
 
 rec=rec[np.all(rec['init_wf']>20, axis=1)]
+
+
+dt=np.zeros((len(rec['h']),len(pmts)-1))
+for i,ev in enumerate(rec['h']):
+    for j in range(len(pmts)-1):
+        try:
+            dt[i,j]=np.amin(np.nonzero(ev[:,j]>0)[0])-np.amin(np.nonzero(ev[:,-1]>0)[0])
+        except:
+            dt[i,j]=100
+
+
+fig, ax=plt.subplots(2,3)
+# fig.subplots_adjust(wspace=0, hspace=0)
+fig.suptitle('Co57', fontsize=25)
+for i in range(len(pmts)-1):
+    np.ravel(ax)[i].hist(dt[:,i], bins=100, range=[-40,80], label='First PE delay PMT{}-PMT14'.format(pmts[i]))
+    np.ravel(ax)[i].legend(fontsize=15)
 
 fig, ax=plt.subplots(2,3)
 fig.subplots_adjust(wspace=0, hspace=0)

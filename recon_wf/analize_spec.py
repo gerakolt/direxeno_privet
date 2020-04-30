@@ -4,53 +4,46 @@ import sys
 import os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
-def do_smd(X, Y, w):
-    if not int(1000/w)==1000/w:
-        print('Not good window')
-        return np.zeros(1000), np.zeros(1000)
-    n=int(1000/w)
-    x=np.zeros(n)
-    y=np.zeros(n)
-    for i in range(n):
-        x[i]=np.mean(X[w*i:w*(i+1)])
-        y[i]=np.mean(Y[w*i:w*(i+1)])
-    return x,y
+from scipy.stats import poisson, binom
+from scipy.optimize import curve_fit
 
 
+file='/home/gerak/Desktop/DireXeno/190803/Co57/Spectra/spectra.npz'
+Data=np.load(file)
+pmts=Data['pmts']
+first_pmt=Data['first_pmt']
+BLW=Data['BLW']
+Chi2=Data['Chi2']
+mean_WF=Data['mean_WF']
+Recon_wf=Data['Recon_wf']
+spectrum=Data['spectrum']
 
-source='Co57'
-type=''
-pmt=0
-wind=1
-path='/home/gerak/Desktop/DireXeno/190803/'+source+type+'/PMT{}/'.format(pmt)
-data=np.load(path+'spectra.npz')
-spectrum=np.mean(data['spectrum'], axis=0)
-Recon_wf=data['Recon_wf']/len(data['ID'])
-mean_wf=data['mean_WF']/len(data['ID'])
-Chi2=data['Chi2']
-ID=data['ID']
+plt.figure()
+plt.plot(pmts, first_pmt, 'o')
+plt.title('first pmt')
 
-x=np.arange(1000)/5
-x2,spectrum2=do_smd(x, spectrum, wind*5)
+chi2_cut=2e6
+plt.figure()
+plt.hist(Chi2, bins=100, range=[0,2e7])
+plt.axvline(chi2_cut, ymin=0, ymax=1, color='k')
+plt.title('Chi2')
+
+blw_cut=20
+for i, pmt in enumerate(pmts):
+    plt.figure()
+    plt.hist(BLW[:,i], bins=100)
+    plt.axvline(blw_cut, ymin=0, ymax=1, color='k')
+    plt.title('BLW {}'.format(pmts[i]))
 
 
-fig=plt.figure()
-fig.suptitle('PMT{}-'.format(pmt)+source+type)
+for i, pmt in enumerate(pmts):
+    fig=plt.figure()
+    fig.suptitle(pmt)
+    ax=fig.add_subplot(211)
+    ax.plot(np.mean(spectrum[i], axis=1), 'k.-')
 
-ax=fig.add_subplot(311)
-ax.plot(x, spectrum, label='{}')
-ax.plot(x2, spectrum2, '.-')
-ax.legend()
-
-ax=fig.add_subplot(312)
-ax.plot(x, Recon_wf, 'r.-', label='Recon WF - Chi2={}'.format(np.sqrt(np.mean(Recon_wf-mean_wf)**2)))
-ax.plot(x, mean_wf, 'k.-', label='Mean WF')
-ax.legend()
-
-ax=fig.add_subplot(313)
-ax.hist(Chi2, bins=100, range=[0,4e7])
-ax.set_yscale('log')
-print(ID[Chi2>0.5e7][:5])
+    ax=fig.add_subplot(212)
+    ax.plot(mean_WF[i], 'k.-')
+    ax.plot(Recon_wf[i], 'r.-')
 
 plt.show()

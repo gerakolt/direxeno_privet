@@ -59,11 +59,41 @@ def do_dif(smd):
     else:
         return (np.roll(smd,1)-np.roll(smd,-1))/2
 
-def find_peaks(wfs, blw, pmts):
-    dif=do_dif(wfs)
+def find_peaks(wf, blw, pmt, l, r):
+    wf_copy=np.array(wf)
+    dif=do_dif(wf)
     dif=dif-np.median(dif[:200], axis=0)
     dif_blw=np.sqrt(np.mean((dif[:200])**2, axis=0))
+    maxi=np.argmin(wf)
+    counter=0
+    while wf[maxi]<-3*blw and counter<1000:
+        counter+=1
+        peak=Peak(pmt, maxi, -wf[maxi], blw)
+        if len(np.nonzero(np.logical_and(wf[:maxi]>-blw, dif[:maxi]<dif_blw))[0])>0:
+            init=np.amax(np.nonzero(np.logical_and(wf[:maxi]>-blw, dif[:maxi]<dif_blw))[0])
+        else:
+            init=0
+        if len(np.nonzero(np.logical_and(wf[maxi:]>-blw, dif[maxi:]>-dif_blw))[0])>0:
+            fin=maxi+np.amin(np.nonzero(np.logical_and(wf[maxi:]>-blw, dif[maxi:]>-dif_blw))[0])
+        else:
+            fin=len(wf)-1
+        peak.init=init
+        peak.fin=fin
+        peak.area=-np.sum(wf[init:fin])
+        if len(np.nonzero(wf[peak.init:peak.maxi]>-0.1*peak.height)[0])>0:
+            peak.init10=peak.init+np.amax(np.nonzero(wf[peak.init:peak.maxi]>-0.1*peak.height)[0])
+        else:
+            peak.init10=peak.init
+        wf[init:fin+1]=0
+        maxi=np.argmin(wf)
+        yield (-np.sum(wf_copy[peak.init10+l-200:peak.init10+r-200]), peak)
+
+def show_peaks(wfs, blw, pmts):
+    dif=do_dif(wfs)
+    dif=dif-np.median(dif[:150], axis=0)
+    dif_blw=np.sqrt(np.mean((dif[:150])**2, axis=0))
     for i, wf in enumerate(wfs.T):
+        WF=np.array(wf)
         maxi=np.argmin(wf)
         counter=0
         while wf[maxi]<-3*blw[i] and counter<1000:
@@ -86,8 +116,17 @@ def find_peaks(wfs, blw, pmts):
                 peak.init10=peak.init
             wf[init:fin+1]=0
             maxi=np.argmin(wf)
-            yield peak
 
+            plt.figure()
+            x=np.arange(1000)
+            plt.title('PMT{}'.format(i), fontsize=25)
+            plt.plot(x, WF, '.-', alpha=1)
+            plt.axhline(y=0, color='k')
+            plt.fill_between(x=x[:150], y1=-blw[i], y2=0, color='y', alpha=1, label='BLW')
+            # plt.fill_between(x[peak.init:peak.fin], y1=WF[peak.init:peak.fin], y2=0, alpha=0.5)
+            plt.legend(fontsize=25)
+            plt.show()
+            yield peak
 
 
 

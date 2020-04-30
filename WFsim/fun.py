@@ -123,21 +123,29 @@ def merge_hits(self, wf, blw):
 
 
 
-def Recon_WF(wfs, spe, dn, up, h_init):
+def Recon_WF(wfs, spe, dn, up, h_init, h_cut):
     for wf in wfs:
         Recon_wf=np.zeros(len(wf))
         Real_Recon_wf=np.zeros(len(wf))
         t=[]
-        blw=np.sqrt(np.mean(wf[:150]**2))
+        area=0
+        blw=np.sqrt(np.mean(wf[:40]**2))
         WF=WaveForm(100, blw)
         find_hits(WF, wf)
+        if len(sorted(filter(lambda hit: hit.height>h_init, WF.hits), key=lambda hit: hit.init))==0:
+            yield [wf, 1e9, np.zeros(1000), 0, wf]
         init=sorted(filter(lambda hit: hit.height>h_init, WF.hits), key=lambda hit: hit.init)[0].init
+        # wf=np.roll(wf, -init)
+        wf_copy=np.array(wf)
+        for hit in WF.hits:
+            if hit.init>=init:
+                area+=hit.area
         while len(WF.hits)>0:
             if len(WF.hits[0].groups)==0:
                 Recon_wf[WF.hits[0].init:WF.hits[0].fin]+=(wf-Recon_wf)[WF.hits[0].init:WF.hits[0].fin]
             else:
                 i=WF.hits[0].groups[0].maxi
-                if i<init or (wf-Recon_wf)[i]>0.5*np.amin(spe):
+                if i<init or (wf-Recon_wf)[i]>-h_cut:
                     Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]+=np.array(wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]-
                         Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right])
                     N=0
@@ -148,7 +156,7 @@ def Recon_WF(wfs, spe, dn, up, h_init):
                     J=i
                     N=1
                     for j in range(np.amax((init, WF.hits[0].groups[0].left)), np.amin((WF.hits[0].groups[0].maxi+5,999))):
-                        if (wf-Recon_wf)[j]>0.5*np.amin(spe):
+                        if (wf-Recon_wf)[j]>-h_cut:
                             temp=1
                         else:
                             if j>np.argmin(spe):
@@ -172,36 +180,8 @@ def Recon_WF(wfs, spe, dn, up, h_init):
 
             WF.hits=[]
             find_hits(WF, wf-Recon_wf)
-        yield [Real_Recon_wf, np.sum(((Real_Recon_wf-wf)[init:])**2), np.histogram(t, bins=1000, range=[-0.5, 999.5])[0]]
+        yield [Real_Recon_wf, np.sum(((Real_Recon_wf-wf)[init:])**2), np.histogram(t, bins=1000, range=[-0.5, 999.5])[0], area, wf_copy]
 
-
-def find_peaks(wf, blw, pmts):
-    dif=do_dif(wf)
-    dif=dif-np.median(dif[:200])
-    dif_blw=np.sqrt(np.mean((dif[:200])**2))
-    maxi=np.argmin(wf)
-    counter=0
-    while wf[maxi]<-3*blw and counter<1000:
-        counter+=1
-        peak=Peak(pmts[0], maxi, -wf[maxi], blw)
-        if len(np.nonzero(np.logical_and(wf[:maxi]>-blw, dif[:maxi]<dif_blw))[0])>0:
-            init=np.amax(np.nonzero(np.logical_and(wf[:maxi]>-blw, dif[:maxi]<dif_blw))[0])
-        else:
-            init=0
-        if len(np.nonzero(np.logical_and(wf[maxi:]>-blw, dif[maxi:]>-dif_blw))[0])>0:
-            fin=maxi+np.amin(np.nonzero(np.logical_and(wf[maxi:]>-blw, dif[maxi:]>-dif_blw))[0])
-        else:
-            fin=len(wf)-1
-        peak.init=init
-        peak.fin=fin
-        peak.area=-np.sum(wf[init:fin])
-        if len(np.nonzero(wf[peak.init:peak.maxi]>-0.1*peak.height)[0])>0:
-            peak.init10=peak.init+np.amax(np.nonzero(wf[peak.init:peak.maxi]>-0.1*peak.height)[0])
-        else:
-            peak.init10=peak.init
-        wf[init:fin+1]=0
-        maxi=np.argmin(wf)
-        yield peak
 
 def do_dif(smd):
     return np.roll(smd,1)/2-np.roll(smd,-1)/2

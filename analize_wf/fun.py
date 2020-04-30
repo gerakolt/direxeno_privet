@@ -60,6 +60,11 @@ def find_hits(self, wf):
     self.hits=sorted(self.hits, key=lambda hit: hit.init)
     merge_hits(self, wf, self.blw)
     for hit in self.hits:
+        inds=np.nonzero(wf[hit.init:hit.fin]<-0.1*hit.height)[0]
+        if len(inds)>0:
+            hit.init10=hit.init+np.amin(inds)
+        else:
+            hit.init10=hit.init
         hit.groups=sorted(hit.groups, key=lambda grp: grp.maxi)
 
 

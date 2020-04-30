@@ -8,19 +8,26 @@ from scipy.stats import poisson, binom
 from classes import WaveForm, Hit
 from fun import find_hits
 
-height_cut=26
 
-pmt=4
-events=5000
+pmt=1
+events=15000
 N=50
 tau=45
 St=0.7
 
-Data=np.load('/home/gerak/Desktop/DireXeno/pulser_190803_46211/PMT{}/AllSPEs.npz'.format(pmt))
+Data=np.load('/home/gerak/Desktop/DireXeno/190803/pulser/SPEs{}.npz'.format(pmt))
 SPEs=Data['SPE']
-SPEs=SPEs[np.nonzero(np.amin(SPEs, axis=1)<-height_cut)[0]]
-zeros=Data['zeros']
-SPEs[:,zeros]=0
+Data=np.load('/home/gerak/Desktop/DireXeno/190803/pulser/area{}.npz'.format(pmt))
+Mpe=Data['Mpe']
+Spe=Data['Spe']
+mean_spe_area=Data['mean_spe_area']
+
+spe=np.mean(SPEs, axis=0)*Mpe/mean_spe_area
+for i in range(len(SPEs[:,0])):
+    SPEs[i]=spe*np.random.normal(1,Spe/Mpe)
+    print(i, 'out of', len(SPEs[:,0]))
+# zeros=Data['zeros']
+# SPEs[:,zeros]=0
 
 def shoot_pes(SPEs, t):
     for i, spe in enumerate(SPEs):
@@ -38,16 +45,18 @@ def shoot_pes(SPEs, t):
             pe[:1000-(np.argmin(spe)-t[i])]+=spe[np.argmin(spe)-t[i]:]
         yield pe
 
-def make_event(events, SPEs, N, tau, St):
+def make_event(events, SPEs, n, tau, St):
     id=0
     while events>0:
+        N=np.random.poisson(n)
         Rec=[]
         print(events)
         wf=np.zeros(1000)
         events-=1
         t=np.round(np.random.normal(200+np.random.exponential(tau*5, N), St*5, N)).astype(int)
         h, bins=np.histogram(t, bins=1000, range=[-0.5, 999.5])
-        for pe in shoot_pes(SPEs[np.random.randint(0,len(SPEs),N)], t):
+        SPEids=np.random.randint(0,len(SPEs),N)
+        for pe in shoot_pes(SPEs[SPEids], t):
             wf+=pe
         wf=wf-np.median(wf[:150])
         blw=np.sqrt(np.mean(wf[:150]**2))

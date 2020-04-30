@@ -123,134 +123,97 @@ def merge_hits(self, wf, blw):
 
 
 
-def Recon_WF(wf, spe, dn, up, h_init):
-    Recon_wf=np.zeros(len(wf))
-    Real_Recon_wf=np.zeros(len(wf))
-    t=[]
-    blw=np.sqrt(np.mean(wf[:150]**2))
-    WF=WaveForm(100, blw)
-    find_hits(WF, wf)
-    if len(list(filter(lambda hit: hit.height>h_init, WF.hits)))==0:
-        return Real_Recon_wf, np.sum(((Real_Recon_wf-wf))**2), np.zeros(1000)
-    init=sorted(filter(lambda hit: hit.height>h_init, WF.hits), key=lambda hit: hit.init)[0].init
-    while len(WF.hits)>0:
-        if len(WF.hits[0].groups)==0:
-            Recon_wf[WF.hits[0].init:WF.hits[0].fin]+=(wf-Recon_wf)[WF.hits[0].init:WF.hits[0].fin]
-        else:
-            i=WF.hits[0].groups[0].maxi
-            if i<init or (wf-Recon_wf)[i]>0.5*np.amin(spe):
-                Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]+=np.array(wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]-
-                    Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right])
-                N=0
-                J=-1
+def Recon_WFs(file, spe, delay, dn, up, h_init, h_cuts, pmts, first_id):
+    recon_wfs=np.zeros((len(pmts), 1000))
+    recon_Hs=np.zeros((len(pmts), 1000))
+    WFS=np.zeros((len(pmts), 1000))
+    PMT_num=20
+    time_samples=1024
+    Data=np.fromfile(file, np.float32, (PMT_num+4)*(time_samples+2)*first_id)
+    id=first_id-1
+    while(1):
+        id+=1
+        Data=np.fromfile(file, np.float32, (PMT_num+4)*(time_samples+2))
+        if len(Data)<(PMT_num+4)*(time_samples+2):
+            break
+        Data=np.reshape(Data, (PMT_num+4, time_samples+2)).T
+        wfs=Data[2:1002,pmts+2]
+        wfs=wfs-np.median(wfs[:40], axis=0)
+        BLW=np.sqrt(np.mean(wfs[:40]**2, axis=0))
+        Chi2=0
+        for i, [recon_wf, chi2, recon_H, wf] in enumerate(Recon_WF(wfs.T, spe, dn, up, h_init, h_cuts, delay, BLW)):
+            WFS[i]=wf
+            recon_wfs[i]=recon_wf
+            Chi2+=chi2
+            recon_Hs[i]=recon_H
+        yield [recon_wfs, Chi2, recon_Hs, WFS, BLW]
+
+def Recon_WF(wfs, SPE, dn, up, h_init, h_cuts, delay, BLW):
+    for i, wf in enumerate(wfs):
+        wf=np.roll(wf, -int(5*delay[i]))
+        wf_copy=np.array(wf)
+        spe=SPE[i]
+        h_cut=h_cuts[i]
+        Recon_wf=np.zeros(len(wf))
+        Real_Recon_wf=np.zeros(len(wf))
+        t=[]
+        blw=BLW[i]
+        WF=WaveForm(100, blw)
+        find_hits(WF, wf)
+        # if len(sorted(filter(lambda hit: hit.height>h_init, WF.hits), key=lambda hit: hit.init))==0:
+        #     plt.figure()
+        #     plt.plot(wf, 'k.')
+        #     plt.title('no hits')
+        #     plt.show()
+        # init=sorted(filter(lambda hit: hit.height>h_init, WF.hits), key=lambda hit: hit.init)[0].init
+        init=0
+        while len(WF.hits)>0:
+            if len(WF.hits[0].groups)==0:
+                Recon_wf[WF.hits[0].init:WF.hits[0].fin]+=(wf-Recon_wf)[WF.hits[0].init:WF.hits[0].fin]
             else:
-                recon_wf=np.zeros(1000)
-                Chi2=1e17
-                J=i
-                N=1
-                for j in range(np.amax((init, WF.hits[0].groups[0].left)), np.amin((WF.hits[0].groups[0].maxi+5,999))):
-                    if (wf-Recon_wf)[j]>0.5*np.amin(spe):
-                        temp=1
-                    else:
-                        if j>np.argmin(spe):
-                            recon_wf[j-np.argmin(spe):]=spe[:len(spe)-(j-np.argmin(spe))]
-                        else:
-                            recon_wf[:len(recon_wf)-(np.argmin(spe)-j)]=spe[np.argmin(spe)-j:]
-                        n=1
-                        chi2=np.mean((recon_wf[j-dn:j-up]-(wf-Recon_wf)[j-dn:j-up])**2)
-                        if chi2<Chi2:
-                            Chi2=chi2
-                            J=j
-                            N=n
-                if J>np.argmin(spe):
-                    Real_Recon_wf[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
-                    Recon_wf[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
+                i=WF.hits[0].groups[0].maxi
+                if i<init or (wf-Recon_wf)[i]>-h_cut:
+                    Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]+=np.array(wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]-
+                        Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right])
+                    N=0
+                    J=-1
                 else:
-                    Real_Recon_wf[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
-                    Recon_wf[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
-                for i in range(N):
-                    t.append(J)
-
-        WF.hits=[]
-        find_hits(WF, wf-Recon_wf)
-    return Real_Recon_wf, np.sqrt(np.mean((Real_Recon_wf-wf)[init:]**2)), np.histogram(t, bins=1000, range=[-0.5, 999.5])[0]
-
-
-
-def Show_Recon_WF(wf, spe, dn, up, h_init, p):
-    Recon_wf=np.zeros(len(wf))
-    Real_Recon_wf=np.zeros(len(wf))
-    t=[]
-    blw=np.sqrt(np.mean(wf[:150]**2))
-    WF=WaveForm(100, blw)
-    find_hits(WF, wf)
-    if len(list(filter(lambda hit: hit.height>h_init, WF.hits)))==0:
-        return Real_Recon_wf, np.sum(((Real_Recon_wf-wf))**2), np.zeros(1000)
-    init=sorted(filter(lambda hit: hit.height>h_init, WF.hits), key=lambda hit: hit.init)[0].init
-    while len(WF.hits)>0:
-        if len(WF.hits[0].groups)==0:
-            Recon_wf[WF.hits[0].init:WF.hits[0].fin]+=(wf-Recon_wf)[WF.hits[0].init:WF.hits[0].fin]
-        else:
-            i=WF.hits[0].groups[0].maxi
-            if i<init or (wf-Recon_wf)[i]>0.5*np.amin(spe):
-                Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]+=np.array(wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right]-
-                    Recon_wf[WF.hits[0].groups[0].left:WF.hits[0].groups[0].right])
-                N=0
-                J=-1
-            else:
-                recon_wf=np.zeros(1000)
-                Chi2=1e17
-                J=i
-                N=1
-                for j in range(np.amax((init, WF.hits[0].groups[0].left)), np.amin((WF.hits[0].groups[0].maxi+5,999))):
-                    if (wf-Recon_wf)[j]>0.5*np.amin(spe):
-                        temp=1
-                    else:
-                        if j>np.argmin(spe):
-                            recon_wf[j-np.argmin(spe):]=spe[:len(spe)-(j-np.argmin(spe))]
+                    recon_wf=np.zeros(1000)
+                    Chi2=1e17
+                    J=i
+                    N=1
+                    for j in range(np.amax((init, WF.hits[0].groups[0].left)), np.amin((WF.hits[0].groups[0].maxi+5,999))):
+                        if (wf-Recon_wf)[j]>-h_cut:
+                            temp=1
                         else:
-                            recon_wf[:len(recon_wf)-(np.argmin(spe)-j)]=spe[np.argmin(spe)-j:]
-                        n=1
-                        chi2=np.mean((recon_wf[j-dn:j-up]-(wf-Recon_wf)[j-dn:j-up])**2)
-                        if chi2<Chi2:
-                            Chi2=chi2
-                            J=j
-                            N=n
-                x=np.arange(1000)
-                peak=np.zeros(1000)
-                if J>np.argmin(spe):
-                    Real_Recon_wf[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
-                    Recon_wf[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
-                    peak[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
-                    if p==1:
-                        plt.figure()
-                        plt.plot(x, wf, 'k.-', label='wf')
-                        plt.plot(x, Real_Recon_wf, 'r.-', label='Real_Recon_wf')
-                        plt.plot(x, Recon_wf, 'g.-', label='Recon_wf')
-                        plt.plot(x, wf-Recon_wf, 'b.-', label='fit')
-                        plt.plot(x, peak, 'c.-', label='peak')
-                        plt.legend()
-                        plt.show()
-                else:
-                    Real_Recon_wf[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
-                    Recon_wf[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
-                    peak[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
-                    if p==1:
-                        plt.figure()
-                        plt.plot(x, wf, 'k.-', label='wf')
-                        plt.plot(x, Real_Recon_wf, 'r.-', label='Real_Recon_wf')
-                        plt.plot(x, Recon_wf, 'g.-', label='Recon_wf')
-                        plt.plot(x, wf-Recon_wf, 'b.-', label='fit')
-                        plt.plot(x, peak, 'c.-', label='peak')
-                        plt.legend()
-                        plt.show()
-                for i in range(N):
-                    t.append(J)
+                            if j>np.argmin(spe):
+                                recon_wf[j-np.argmin(spe):]=spe[:len(spe)-(j-np.argmin(spe))]
+                            else:
+                                recon_wf[:len(recon_wf)-(np.argmin(spe)-j)]=spe[np.argmin(spe)-j:]
+                            n=1
+                            chi2=np.mean((recon_wf[j-dn:j-up]-(wf-Recon_wf)[j-dn:j-up])**2)
+                            if chi2<Chi2:
+                                Chi2=chi2
+                                J=j
+                                N=n
+                    if J>np.argmin(spe):
+                        Real_Recon_wf[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
+                        Recon_wf[J-np.argmin(spe):]+=spe[:len(spe)-(J-np.argmin(spe))]
+                    else:
+                        Real_Recon_wf[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
+                        Recon_wf[:len(recon_wf)-(np.argmin(spe)-J)]+=spe[np.argmin(spe)-J:]
+                    for i in range(N):
+                        t.append(J)
 
-        WF.hits=[]
-        find_hits(WF, wf-Recon_wf)
-    return Real_Recon_wf, np.sqrt(np.mean((Real_Recon_wf-wf)[init:]**2)), np.histogram(t, bins=1000, range=[-0.5, 999.5])[0]
+            WF.hits=[]
+            find_hits(WF, wf-Recon_wf)
+        yield [Real_Recon_wf, np.sum(((Real_Recon_wf-wf)[init:])**2), np.histogram(t, bins=1000,
+                range=[-0.5, 999.5])[0], wf_copy]
 
 
 def do_dif(smd):
     return np.roll(smd,1)/2-np.roll(smd,-1)/2
+    # if len(np.shape(smd))>1:
+    #     return (np.roll(smd,1,axis=1)-np.roll(smd,-1,axis=1))/2
+    # else:
+    #     return (np.roll(smd,1)-np.roll(smd,-1))/2
