@@ -4,20 +4,37 @@ import numpy as np
 from matplotlib.colors import LogNorm
 from scipy.optimize import curve_fit
 from fun import do_smd, do_dif, find_peaks, analize_peaks
+<<<<<<< HEAD
 
 blw_cut=80
 left=140
 right=170
 height_cut=25
+=======
+########## This is a develop branch#########
+pmts=[0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19]
+blw_cut=60
+left=110
+right=170
+height_cut=26
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 d_cut=4
 l=195
 r=264
 zeros=[]
 
+<<<<<<< HEAD
 pmts=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
 pmt=19
 path='/home/gerak/Desktop/DireXeno/030220/pulser3/'
 Peaks=np.load(path+'Peaks/AllPeaks.npz')['rec']
+=======
+pmts=np.array([0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19])
+pmt=0
+# path='/home/gerak/Desktop/DireXeno/pulser_190803_46211/'
+path='../../../850V_46213/Peaks/'
+Peaks=np.load(path+'AllPeaks.npz')['rec']
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 SPEpeaks=[]
 try:
     SPE=np.load(path+'PMT{}/AllSPEs.npz'.format(pmt))['SPE']
@@ -31,6 +48,7 @@ except:
     spe=np.zeros(1000)
     spe_cut=np.zeros(1000)
     SPE=[]
+    print('Cant open AllSPEs from {}'.format(pmt))
 
 peaks=Peaks[Peaks['pmt']==pmt]
 peaks_tcut=peaks[(peaks['blw']<blw_cut) & (peaks['t']<right) & (peaks['t']>left)]
@@ -106,10 +124,20 @@ ax.legend()
 
 ax=fig.add_subplot(4,1,4)
 ax.plot(spe, 'k.', label='Sum of {} wfs'.format(len(SPE)))
-ax.plot(spe_cut, 'g.')
-ax.fill_between(np.arange(1000), y1=-np.sqrt(np.mean(spe_cut[:150]**2)), y2=0)
+try:
+    ax.plot(spe_cut, 'g.')
+    ax.fill_between(np.linspace(l, r, 100), y1=np.amin(spe_cut), y2=0, alpha=0.2, label='{} PEs'.format(factor))
+    factor=-np.sum(spe_cut[l:r])/p_area[1]
+except:
+    factor=1
+    print('Cant plot spe_cut')
 ax.axhline(y=0, xmin=0, xmax=1, color='r')
+<<<<<<< HEAD
 ax.fill_between(np.linspace(l, r, 100), y1=np.amin(spe_cut), y2=0, alpha=0.2, label='{} PEs'.format(factor))
+=======
+l=195
+r=244
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 ax.legend()
 # for peak in SPEpeaks:
 #     ax.fill_between(np.linspace(peak.init, peak.fin, 100), y1=-peak.height, y2=0, alpha=0.2, label='{} PEs'.format(np.round(peak.area/p[1])))
@@ -122,7 +150,7 @@ try:
     np.savez(path+'PMT{}/AllSPEs'.format(pmt), SPE=SPE, factor=factor, zeros=zeros, Spe=p_area[2]/p_area[1], area_x=x_area, area_y=h_area)
     print('Saved factor')
 except:
-    temp=1
+    print('didnt save SPE and factor and Spe')
 plt.show()
 
 

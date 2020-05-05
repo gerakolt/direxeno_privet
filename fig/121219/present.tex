@@ -1,0 +1,83 @@
+% Copyright 2019 Clara Eleonore Pavillet
+
+% Author: Clara Eleonore Pavillet
+% Description: This is an unofficial Oxford University Beamer Template I made from scratch. Feel free to use it, modify it, share it.
+% Version: 1.0
+
+\documentclass{beamer}
+\input{Packages.tex}
+\usetheme{oxonian}
+
+\title{LXe scintillation model}
+\begin{document}
+
+{\setbeamertemplate{footline}{} 
+\frame{\titlepage}}
+
+\begin{frame}{...}
+The number of photons emitted at time $i$,
+\begin{equation}
+n_i^{ph}\sim Poisson(NY_i),
+\end{equation}
+where $N$ is the total number of photon emitted and $Y$ is the model (assuming constant $N$ for all events).\\
+The number of PEs created in the PMT in time $i$,
+\begin{equation}
+n_i^{pe}\sim Binom(Q, Poisson(NY_i)).
+\end{equation}
+The number of PEs that need to be resolved in time $i$,
+\begin{equation}
+\begin{split}
+\tilde n_i&=\sum_j m_{ij}\\
+m_{ij}&\sim Binom(Q, Poisson(NY_j))Norm(i-j|\sigma_t)
+\end{split}
+\end{equation}
+\end{frame}
+
+\begin{frame}
+Assume that the sum of the independent variables $m_{ij}$ is distributed normally, so the number of PEs that need to be resolved in time $i$,
+\begin{equation}
+\begin{split}
+\tilde n_i&\sim Norm\left(\sum_j \mu_j\bigg|\sqrt{\sum_j V_j}\right)\\
+\mu_j&=QNY_jNorm(i-j|\sigma_t)\\
+V_j&=\mu_j
+\end{split}
+\end{equation}
+The number of PEs that actually resolved in time $i$,
+\begin{equation}
+n_i\sim Norm(\tilde n_i|\sigma_{PE})
+\end{equation}
+\end{frame}
+
+\begin{frame}
+We have a 2D histogram $H(i,n)$ which holds the number of events in which $n$ PEs were resolved at time $i$. The expected number for $H(i,n)$ is,
+\begin{equation}
+\begin{split}
+E(H(i,n))&=N_{ev}Norm(n-\tilde n_i|\sigma_{PE})=\\
+&\sum_{m_i}\sum_{ev\rightarrow \tilde n_i=m_i}Norm(n-m_i|\sigma_{PE})=\\
+&N_{ev}\sum_{m_i}Norm(n-m_i|\sigma_{PE})Norm(m_i-\sum_j\mu_j\big|\sqrt{\sum_j V_j})
+\end{split}
+\end{equation}
+\end{frame}
+
+\begin{frame}{Model}
+\begin{equation}
+\begin{split}
+E\left(\frac{H(i,n)}{N_{ev}}\right)=&\sqrt{\frac{\pi}{2(v_i^2+\sigma_{PE}^2)}}Exp\left(-\frac{(n-\mu_i)^2}{2(v_i^2+\sigma_{PE}^2)}\right)\\
+&\left(1-Erf\left(\frac{n_iv_i^2+\mu_i\sigma_{PE}^2}{\sqrt{2v_i^2\sigma_{PE}^2(v_i^2+\sigma_{PE}^2)}}\right)\right)
+\end{split}
+\end{equation}
+\end{frame}
+
+\begin{frame}
+For $Y_i=\frac{1-F}{\tau_s}e^{-t/\tau_s}$
+\begin{equation}
+\begin{split}
+\mu_i=&\frac{QN(1-F)}{2\sqrt{\pi}\tau_s}Exp\left(\frac{\sigma_t^2}{2\tau_s^2}-\frac{t_i-T}{\tau_s}
+\right)\\
+&\left(1+Erf\left(\frac{t_i-T}{\sqrt{2}\sigma_t-\frac{\sigma_t}{\sqrt{2}\tau_s}}\right)\right)
+\end{split}
+\end{equation}
+\end{frame}
+\end{document}
+
+
