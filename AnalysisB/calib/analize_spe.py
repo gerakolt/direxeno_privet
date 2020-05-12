@@ -23,7 +23,7 @@ def func0(X, a,t,s):
         y[i]=np.sum(a*np.exp(-0.5*(np.log(r/t))**2/s**2))*dr
     return y
 
-pmt=19
+pmt=0
 path='/home/gerak/Desktop/DireXeno/190803/pulser/PMT{}/'.format(pmt)
 data=np.load(path+'cuts.npz')
 blw_cut=data['blw_cut']
@@ -108,7 +108,7 @@ ax5.plot(x, BL, 'y.')
 ax3.axvline(-np.amin(spe), ymin=0, ymax=1)
 ax5.legend()
 
-np.savez(path+'areas', areas=areas/p[-2], H_areas=h_area, rng_area=rng, spe=spe)
-np.savez(path+'cuts', blw_cut=blw_cut, height_cut=height_cut, left=left, right=right, rise_time_cut=rise_time_cut)
+# np.savez(path+'areas', areas=areas/p[-2], H_areas=h_area, rng_area=rng, spe=spe)
+# np.savez(path+'cuts', blw_cut=blw_cut, height_cut=height_cut, left=left, right=right, rise_time_cut=rise_time_cut)
 
 plt.show()
