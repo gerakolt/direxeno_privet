@@ -1,17 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-pmts=[1,6,7,8,9,11,17,2,3,12,13,14,15]
+pmts=[0,0,0,0,0,5,10,11,13,15,16,18,19]
 chns=[0,1,2,3,4,5,6,7,8,9,10,11,13]
 
-pmt=15
-path='/home/gerak/Desktop/DireXeno/110520/pulser/'
+pmt=18
+path='/home/gerak/Desktop/DireXeno/130520/pulser/'
 data=np.load(path+'raw_wf.npz')
 rec=data['rec']
 
 
 blw_cut=15
-height_cut=68
+height_cut=75
 left=100
 right=360
 

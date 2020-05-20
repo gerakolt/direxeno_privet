@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os
-from fun import Model, Sim, q0_model, make_P, model_area, Sim2
+from fun import Sim, q0_model, make_P, model_area, Sim2, make_3D
 import sys
 from scipy.optimize import minimize
 from scipy.stats import poisson, binom
@@ -24,21 +24,23 @@ for i in range(len(pmts)-1):
         names.append('{}_{}'.format(pmts[i], pmts[j]))
 
 
-path='/home/gerak/Desktop/DireXeno/190803/Cs137/EventRecon/'
-data=np.load(path+'H1ns_slow.npz')
+path='/home/gerak/Desktop/DireXeno/190803/Co57/EventRecon/'
+data=np.load(path+'H.npz')
 H=data['H']
 G=data['G']
 spectrum=data['spectrum']
 spectra=data['spectra']
 left=data['left']
 right=data['right']
-GPEs=data['GPEs']
-REC=np.load(path+'recon1ns99992.npz')['rec']
+t=np.arange(200)
+dt=t[1]-t[0]
+
 
 rec=np.recarray(1, dtype=[
-    ('NQ', 'f8', len(pmts)),
+    ('Q', 'f8', len(pmts)),
     ('T', 'f8', len(pmts)),
     ('St', 'f8', len(pmts)),
+    ('N', 'f8', 1),
     ('F', 'f8', 1),
     ('Tf', 'f8', 1),
     ('Ts', 'f8', 1),
@@ -62,19 +64,23 @@ def p_to_rec(p):
                 rec[name][0]=p[-2]
             elif name=='F':
                 rec[name][0]=p[-3]
+            elif name=='N':
+                rec[name][0]=p[-4]
             else:
                 print('fuck')
                 sys.exit()
     return rec
 
 counter=0
-PEs=np.arange(len(spectra[0]))
+PEs=np.arange(len(spectra[:,0]))
+GPEs=np.arange(len(spectrum))
+l_min=1e10
 def L(p):
     rec=p_to_rec(p)
-    global counter
+    global counter, l_min
     counter+=1
 
-    nams=['NQ', 'Ts', 'T', 'F', 'Tf', 'Ts']
+    nams=['Q', 'Ts', 'T', 'F', 'Tf', 'Ts']
     for name in nams:
         if np.any(rec[name]<0):
             return 1e10*(1-np.amin(rec[name]))
@@ -86,84 +92,82 @@ def L(p):
         return 1e10*rec['Ts'][0]
     if np.any(rec['St'][0]<0.5):
         return 1e10*(1+np.abs(np.amin(rec['St'][0])))
+    if np.any(rec['T'][0]<10):
+        return 1e10*(10-np.amin(rec['T'][0]))
 
 
     l=0
-    l+=Model(REC['h'][0,:,:], 250, 0.3*np.ones(len(rec[0]['St'])), rec[0]['T'], np.zeros(len(rec[0]['St'])), rec[0]['F'], rec[0]['Tf'], rec[0]['Ts'], rec[0]['St'])
-    sys.exit()
+    m=make_3D(t, dt, rec['N'][0], np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
+    model=np.sum(H[:,0,0])*np.ravel(m)
+    data=np.ravel(H[:,:100,:])
+    if np.any(model<0):
+        print('Model<0')
+        sys.exit()
+    l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
 
-    #     spectra_rng=np.nonzero(np.logical_and(PEs>PEs[np.argmax(spectra[i])]-20, PEs<PEs[np.argmax(spectra[i])]+20))[0]
-    #     model=poisson.pmf(PEs, np.sum(m[:,:,i].T*np.arange(np.shape(m)[0])))[spectra_rng]
-    #     data=spectra[i][spectra_rng]
-    #     model=model/np.amax(model)*np.amax(data)
-    #     L=len(model)
-    #     for j in range(L):
-    #         if model[j]>0 and data[j]<=0:
-    #             l-=model[j]-data[j]
-    #         elif model[j]<=0 and data[j]>0:
-    #             return 1e10*(data[j]-model[j])
-    #         elif model[j]==0 and data[j]==0:
-    #             l+=1
-    #         else:
-    #             l+=(data[j]*np.log(model[j])-data[j]*np.log(data[j])+data[j]-model[j])
-    #
+    data=np.ravel(spectra)
+    lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:,0], axis=1)
+    I=np.arange(len(PEs)*len(lmda))
+    model=poisson.pmf(PEs[I//len(lmda)], lmda[I%len(lmda)]).reshape(len(PEs), len(lmda))
+    model=np.ravel(model/np.amax(model, axis=0)*np.amax(spectra, axis=0))
+    l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
+
     for i in range(len(pmts)-1):
         for j in range(i+1, len(pmts)):
             x=delays[names=='{}_{}'.format(pmts[i], pmts[j])]
-            rng=np.nonzero(np.logical_and(x>x[np.argmax(data)]-3, x<x[np.argmax(data)]+3))[0]
             data=delay_hs[names=='{}_{}'.format(pmts[i], pmts[j])]
+            rng=np.nonzero(np.logical_and(x>x[np.argmax(data)]-3, x<x[np.argmax(data)]+3))[0]
             model=(x[1]-x[0])*np.exp(-0.5*(x[rng]-rec['T'][0,j]+rec['T'][0,i])**2/(rec['St'][0,i]**2+rec['St'][0,j]**2))/np.sqrt(2*np.pi*(rec['St'][0,i]**2+rec['St'][0,j]**2))
             model=model/np.amax(model)*np.amax(data)
             data=data[rng]
-            L=len(model)
-            for j in range(L):
-                if model[j]>0 and data[j]<=0:
-                    l-=model[j]-data[j]
-                elif model[j]<=0 and data[j]>0:
-                    return 1e10*(data[j]-model[j])
-                elif model[j]==0 and data[j]==0:
-                    l+=1
-                else:
-                    l+=(data[j]*np.log(model[j])-data[j]*np.log(data[j])+data[j]-model[j])
+            l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
 
-    if counter%(len(p)+1)==0:
+    if -l<l_min:
+        l_min=-l
+        np.savez('best_p', p=p, l_min=l_min)
+        print('$$$$$$$$$$$ NEW best p $$$$$$$$$$$$$$$$$$$$')
+    if True:
         print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         print('iteration=', int(counter/(len(p)+1)), 'fanc=',-l)
         print('--------------------------------')
         print(rec)
     return -l
 
-rec[0]=([155.23219353, 111.54624717,  99.43339147, 147.80737649, 139.84950503, 277.26826484],
- [25.34443756, 25.59962705, 25.41200686, 25.40401068, 25.60161608, 25.70069353],
- [1.25566649, 0.88644238, 0.98605188, 0.99167018, 1.01187586, 0.99076703], 0.0440187, 0.82417004, 39.00998345)
 
-print(L(rec_to_p(rec)))
-# p=minimize(L, rec_to_p(rec), method='Nelder-Mead', options={'disp':True, 'maxfev':100000})
-# rec=p_to_rec(p.x)
+rec[0]=([2.36767104e-01, 1.63341493e-01, 1.26691556e-01, 1.85975680e-01,
+ 1.84607094e-01, 3.23660489e-01], [4.15747483e+01, 4.13685636e+01,
+ 4.14380260e+01, 4.12572846e+01, 4.17387013e+01, 4.15021659e+01],
+ [9.78894574e-01, 1.00752856e+00, 9.50198714e-01, 8.57762759e-01,
+ 9.23170382e-01, 9.07238252e-01], 7.93000000e+03, 2.86990921e-02,
+ 5.00000000e+00, 4.50000000e+01)
+# print(L(rec_to_p(rec)))
+p=minimize(L, rec_to_p(rec), method='Nelder-Mead', options={'disp':True, 'maxfev':100000})
+rec=p_to_rec(p.x)
 
-m=Model(rec['NQ'][0], rec['T'][0],  np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
-s, GS, GS_spectrum=Sim(rec['NQ'][0], rec['T'][0], 5,  np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
+m=make_3D(t, dt, rec['N'][0], np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
+s, GS, GS_spectrum=Sim2(rec['N'][0], rec['Q'][0], rec['T'][0], 5,  np.zeros(len(pmts)), rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['St'][0])
 
-x=np.arange(200)
+
+
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):
-    np.ravel(ax)[i].plot(x, np.sum(H[:,:,i].T*np.arange(np.shape(H)[0]), axis=1), 'ko', label='Data - PMT{}'.format(pmts[i]))
-    np.ravel(ax)[i].plot(x, np.sum(H[:,0,i])*np.sum(m[:,:,i].T*np.arange(np.shape(m)[0]), axis=1), 'r.-', label='2 exp model ({:3.2f} PEs)'.format(np.sum(m[:,:,i].T*np.arange(np.shape(m)[0]))), linewidth=3)
-    np.ravel(ax)[i].plot(x, np.sum(H[:,0,i])*np.sum(s[:,:,i].T*np.arange(np.shape(s)[0]), axis=1), 'g.-', label='2 exp sim ({:3.2f} PEs)'.format(np.sum(s[:,:,i].T*np.arange(np.shape(s)[0]))), linewidth=3)
+    np.ravel(ax)[i].plot(t, np.sum(H[:,:,i].T*np.arange(np.shape(H)[0]), axis=1), 'ko', label='Data - PMT{}'.format(pmts[i]))
+    np.ravel(ax)[i].plot(t[:100], np.sum(H[:,0,i])*np.sum(m[:,:,i].T*np.arange(np.shape(m)[0]), axis=1), 'r.-', label='2 exp model', linewidth=3)
+    # np.ravel(ax)[i].plot(t, np.sum(H[:,0,i])*np.sum(s[:,:,i].T*np.arange(np.shape(s)[0]), axis=1), 'g.-', label='2 exp sim', linewidth=3)
     np.ravel(ax)[i].legend(fontsize=15)
     np.ravel(ax)[i].set_xlabel('Time [ns]', fontsize='15')
 fig.text(0.04, 0.5, r'$N_{events}\sum_n nH_{ni}$', va='center', rotation='vertical', fontsize=15)
 
 
 fig, ax=plt.subplots(2,3)
-PEs=np.arange(len(spectra[0]))
+lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:,0], axis=1)
+I=np.arange(len(PEs)*len(lmda))
+model=poisson.pmf(PEs[I//len(lmda)], lmda[I%len(lmda)]).reshape(len(PEs), len(lmda))
+model=model/np.amax(model, axis=0)*np.amax(spectra, axis=0)
 for i in range(len(pmts)):
-    spectra_rng=np.nonzero(np.logical_and(PEs>PEs[np.argmax(spectra[i])]-20, PEs<PEs[np.argmax(spectra[i])]+20))[0]
-    # model=poisson.pmf(PEs, np.sum(m[:,:,i].T*np.arange(np.shape(m)[0])))[spectra_rng]
-    # model=model/np.amax(model)*np.amax(spectra[i])
-    np.ravel(ax)[i].plot(PEs, spectra[i], 'ko', label='spectrum - PMT{}'.format(pmts[i]))
-    # np.ravel(ax)[i].plot(PEs[spectra_rng], model, 'r-.')
-
+    np.ravel(ax)[i].plot(PEs, spectra[:,i], 'ko', label='spectrum - PMT{}'.format(pmts[i]))
+    np.ravel(ax)[i].plot(PEs, model[:,i], 'r-.')
+    np.ravel(ax)[i].legend()
 
 fig, ax=plt.subplots(3,5)
 k=0
@@ -171,7 +175,7 @@ for i in range(len(pmts)-1):
     for j in range(i+1, len(pmts)):
         x=delays[names=='{}_{}'.format(pmts[i], pmts[j])]
         data=delay_hs[names=='{}_{}'.format(pmts[i], pmts[j])]
-        rng=np.nonzero(np.logical_and(x>x[np.argmax(data)]-3, x<x[np.argmax(data)]+3))
+        rng=np.nonzero(np.logical_and(x>x[np.argmax(data)]-7, x<x[np.argmax(data)]+7))
         model=(x[1]-x[0])*np.exp(-0.5*(x-rec['T'][0,j]+rec['T'][0,i])**2/(rec['St'][0,i]**2+rec['St'][0,j]**2))/np.sqrt(2*np.pi*(rec['St'][0,i]**2+rec['St'][0,j]**2))
         model=model/np.amax(model)*np.amax(data)
         np.ravel(ax)[k].step(x, data, label='Delays {}_{}'.format(pmts[i], pmts[j]))
@@ -187,8 +191,7 @@ ax1.plot(x, np.sum(G[:,0])*np.sum(GS.T*np.arange(np.shape(GS)[0]), axis=1), 'r-.
 
 ax2.step(GPEs, spectrum)
 GS_spectrum=GS_spectrum/np.amax(GS_spectrum)*np.amax(spectrum)
-ax2.step(GPEs, GS_spectrum)
-# model=poisson.pmf(GPEs, np.sum(GS.T*np.arange(np.shape(GS)[0])))
+ax2.plot(GPEs, GS_spectrum, 'r-.')
 # model=model/np.amax(model)*np.amax(spectrum)
 # ax2.step(GPEs, model, 'r-.')
 

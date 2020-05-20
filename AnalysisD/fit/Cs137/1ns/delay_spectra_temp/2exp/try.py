@@ -9,7 +9,6 @@ from scipy.special import factorial, comb, erf
 from scipy.special import comb
 from PMTgiom import make_pmts
 
-a=np.array([1,10,100])
 
-b=np.array([[1,2,3,4], [-1,-2,-3,-4], [0.5, 1.5, 2.5,3.5]])
-print(a*b.T)
+ind=np.random.choice(3, size=3, replace=False, p=[0.3,0.3,0.4])
+print(ind)

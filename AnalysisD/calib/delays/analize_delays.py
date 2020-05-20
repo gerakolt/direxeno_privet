@@ -6,16 +6,16 @@ import os
 import sys
 
 
-path='/home/gerak/Desktop/DireXeno/050520/pulser/DelayRecon/'
+path='/home/gerak/Desktop/DireXeno/190803/pulser/DelayRecon/'
 data=np.load(path+'delays_lists.npz')
 dT=data['dT']
 dT10=data['dT10']
 names=data['names']
 
+
 def func(x, a,m,s):
     dx=x[1]-x[0]
     return a*np.exp(-0.5*(x-m)**2/s**2)
-
 for i, dt in enumerate(dT):
     h, bins=np.histogram(dt, bins=np.arange(20)-10)
     x=0.5*(bins[1:]+bins[:-1])

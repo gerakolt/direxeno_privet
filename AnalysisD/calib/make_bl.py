@@ -11,15 +11,15 @@ def find_trig(wf):
 
 PMT_num=12
 time_samples=1024
-path='/home/gerak/Desktop/DireXeno/110520/pulser/'
+path='/home/gerak/Desktop/DireXeno/130520/pulser/'
 file=open(path+'out.DXD', 'rb')
 
-pmts=np.array([1,6,7,8,9,11,17,2,3,12,13,14,15])
+pmts=np.array([0,0,0,0,0,5,10,11,13,15,16,18,19])
 chns=[0,1,2,3,4,5,6,7,8,9,10,11,13]
 
-pmt=15
+pmt=18
 BL=np.zeros(1000)
-h_cut=38
+h_cut=40
 data=np.load(path+'PMT{}/cuts.npz'.format(pmt))
 blw_cut=data['blw_cut']
 left=data['left']

@@ -188,6 +188,15 @@ full=np.sum(np.sum(rec['h'], axis=2), axis=1)
 plt.hist(init/full, bins=100, label='PEs W in 10 ns')
 plt.legend()
 
+fig, ax=plt.subplots(3,2)
+# fig.subplots_adjust(wspace=0, hspace=0)
+fig.suptitle('Co57', fontsize=25)
+for i in range(len(pmts)):
+    init=np.sum(rec['h'][:,:10,i], axis=1)
+    full=np.sum(rec['h'][:,:,i], axis=1)
+    np.ravel(ax)[i].hist(init/full, bins=100, label='PEs W in 10 ns', range=[0,1])
+    np.ravel(ax)[i].legend(fontsize=15)
+
 
 
 plt.figure()

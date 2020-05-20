@@ -1,0 +1,41 @@
+\documentclass[12pt]{report}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.4 cm]{geometry}
+\usepackage{graphicx}
+\usepackage{color}
+\graphicspath{{images/}}
+\usepackage{float}
+\usepackage{sidecap}
+\usepackage{subcaption}
+\usepackage{braket}
+\usepackage{pdfpages}
+\usepackage{rotating}
+\usepackage{lineno}
+\usepackage{array}
+\usepackage{cite}
+\usepackage[utf8]{inputenc}
+\usepackage[bottom]{footmisc}
+\usepackage[toc,page]{appendix}
+\usepackage{amssymb}
+
+
+
+
+\begin{document}
+The probability that $\{\text{PMT}_a,...\text{PMT}_z\}$ will create $\{n_{ai},...n_{zi}\}$ PEs at time $t_i$ is
+\begin{equation}
+P(n_{ai},..n_{zi})=\sum_n\text{Poisson}(n|N)\prod_c\text{Binom}(n_{ci}|n, Q_cY_idt_i)
+\end{equation}
+The probability that $\{n_{ai},...n_{zi}\}$ PEs will be resolved in $\{\text{PMT}_a,...\text{PMT}_z\}$ due to PMT jitter and misalignment is
+\begin{equation}
+P(n_{ai},..n_{zi})=\sum_{n}\text{Poisson}(n|N)\prod_c\text{Binom}\left(n_{ci}|n,Q_cdt_in\sum_jdt_jY_j\frac{e^{-(i-j-T_c)^2/(2\sigma_c^2)}}{\sqrt{2\pi}\sigma_c}\right)
+\end{equation}
+$P$ alignment
+\begin{equation}
+\begin{split}
+P_0(n_{a0},..n_{z0})&=\sum_j\prod_{k<j}P(0_{ak}..0_{zk})P(n_{aj},..n_{zj})\\
+P_0(n_{ai},..n_{zi})&=\sum_j\prod_{k<j}P(0_{ak}..0_{zk})\left(1-P(0_{ak}..0_{zk})\right)P(n_{aj+i},..n_{zj+i})
+\end{split}
+\end{equation} 
+\end{document}
+

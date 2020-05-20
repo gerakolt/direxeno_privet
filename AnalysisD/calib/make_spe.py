@@ -9,8 +9,8 @@ def find_trig(wf):
     mid=0.5*(bl+top)
     return np.argmin(np.abs(wf[:400]-mid))
 
-pmt=15
-path='/home/gerak/Desktop/DireXeno/110520/pulser/PMT{}/'.format(pmt)
+pmt=18
+path='/home/gerak/Desktop/DireXeno/130520/pulser/PMT{}/'.format(pmt)
 data=np.load(path+'cuts.npz')
 blw_cut=data['blw_cut']
 height_cut=data['height_cut']
@@ -19,11 +19,11 @@ right=data['right']
 BL=np.load(path+'BL.npz')['BL']
 
 
-pmts=np.array([1,6,7,8,9,11,17,2,3,12,13,14,15])
+pmts=np.array([0,0,0,0,0,5,10,11,13,15,16,18,19])
 chns=[0,1,2,3,4,5,6,7,8,9,10,11,13]
 PMT_num=12
 time_samples=1024
-path='/home/gerak/Desktop/DireXeno/110520/pulser/'.format(pmt)
+path='/home/gerak/Desktop/DireXeno/130520/pulser/'.format(pmt)
 file=open(path+'out.DXD', 'rb')
 
 id=0
@@ -72,11 +72,11 @@ while id<1e5:
     #     plt.plot(x, wf, 'k.')
     #     plt.plot(init10, wf[init10], 'ro')
     #     plt.show()
-
     if h<height_cut:
         rec[j]['spe']=np.zeros(1000)
     else:
         rec[j]['spe']=np.roll(wf, 200-init10)
+
     j+=1
     id+=1
 np.savez(path+'PMT{}/spe'.format(pmt), rec=rec[:j-1])

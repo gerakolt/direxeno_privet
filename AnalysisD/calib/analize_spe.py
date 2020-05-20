@@ -6,12 +6,12 @@ import matplotlib.colors as mcolors
 def func(x, a_pad, a, m_pad, s_pad, m, s):
     return a_pad*np.exp(-0.5*(x-m_pad)**2/s_pad**2)+a*np.exp(-0.5*(x-m)**2/s**2)
 
-pmt=15
-path='/home/gerak/Desktop/DireXeno/110520/pulser/PMT{}/'.format(pmt)
+pmt=18
+path='/home/gerak/Desktop/DireXeno/130520/pulser/PMT{}/'.format(pmt)
 data=np.load(path+'cuts.npz')
 blw_cut=data['blw_cut']
 height_cut=data['height_cut']
-height_cut=15
+# height_cut=15
 left=data['left']
 right=data['right']
 BL=np.load(path+'BL.npz')['BL']
@@ -41,15 +41,15 @@ ax2.axvline(spk_cut, ymin=0, ymax=1, color='k')
 
 rec=rec[rec['dh3']<dh3_cut]
 
-h_heights, bins, pat=ax3.hist(rec['height'], bins=100, label='height', range=[0,150], histtype='step')
+h_heights, bins, pat=ax3.hist(rec['height'], bins=100, label='height', range=[0,250], histtype='step')
 heights=0.5*(bins[1:]+bins[:-1])
 ax3.axvline(height_cut, ymin=0, ymax=1)
 ax3.set_yscale('log')
 ax3.legend()
 
-h_area, bins, pat=ax4.hist(rec['area'], bins=100, label='area', range=[-1000, 15000], histtype='step')
+h_area, bins, pat=ax4.hist(rec['area'], bins=100, label='area', range=[-1000, 4000], histtype='step')
 areas=0.5*(bins[:-1]+bins[1:])
-rng=np.nonzero(np.logical_or(np.logical_and(areas>700, areas<15500), False))[0]
+rng=np.nonzero(np.logical_or(np.logical_and(areas>700, areas<4000), False))[0]
 ax4.set_yscale('log')
 p=[4566.3385835,   401.26508103,   0,  404.40993119,  1500,
   700]

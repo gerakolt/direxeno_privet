@@ -3,8 +3,8 @@ import time
 import matplotlib.pyplot as plt
 
 
-pmt=15
-path='/home/gerak/Desktop/DireXeno/110520/pulser/PMT{}/'.format(pmt)
+pmt=18
+path='/home/gerak/Desktop/DireXeno/130520/pulser/PMT{}/'.format(pmt)
 BL=np.load(path+'BL.npz')['BL']
 x=np.arange(1000)
 
