@@ -24,16 +24,22 @@ r=264
 zeros=[]
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 pmts=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
 pmt=19
 path='/home/gerak/Desktop/DireXeno/030220/pulser3/'
 Peaks=np.load(path+'Peaks/AllPeaks.npz')['rec']
 =======
+=======
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 pmts=np.array([0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19])
 pmt=0
 # path='/home/gerak/Desktop/DireXeno/pulser_190803_46211/'
 path='../../../850V_46213/Peaks/'
 Peaks=np.load(path+'AllPeaks.npz')['rec']
+<<<<<<< HEAD
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
+=======
 >>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 SPEpeaks=[]
 try:
@@ -137,6 +143,9 @@ ax.fill_between(np.linspace(l, r, 100), y1=np.amin(spe_cut), y2=0, alpha=0.2, la
 =======
 l=195
 r=244
+<<<<<<< HEAD
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
+=======
 >>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 ax.legend()
 # for peak in SPEpeaks:

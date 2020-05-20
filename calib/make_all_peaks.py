@@ -30,6 +30,9 @@ path='/home/gerak/Desktop/DireXeno/030220/pulser3/'
 =======
 pmts=[0,1,2,3,4,5,6,7,8,9,10,11,17,14,15,16,18,19]
 path='../../../out/'
+<<<<<<< HEAD
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
+=======
 >>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 file=open(path+'out.DXD', 'rb')
 id=0
@@ -47,6 +50,11 @@ while id<1e6:
     Data=np.reshape(Data, (PMT_num+4, time_samples+2)).T
     trig=np.argmin(Data[2:1002,0])
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    plt.plot(Data[2:1002,0])
+    plt.show()
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 =======
     plt.plot(Data[2:1002,0])
     plt.show()

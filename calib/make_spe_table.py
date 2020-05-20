@@ -60,7 +60,11 @@ while id<1e6:
             j+=1
             if j==len(SPE[:,0]):
 <<<<<<< HEAD
+<<<<<<< HEAD
                 np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id), SPE=SPE, init10=init10)
+=======
+                np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id), SPE=SPE, rec=rec)
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 =======
                 np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id), SPE=SPE, rec=rec)
 >>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
@@ -69,7 +73,11 @@ while id<1e6:
             break
     id+=1
 <<<<<<< HEAD
+<<<<<<< HEAD
 np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id-1), SPE=SPE[:j-1], init10=init10[:j-1])
+=======
+np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id-1), SPE=SPE[:j-1], rec=rec[:j-1])
+>>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
 =======
 np.savez(path+'PMT{}/SPE{}to{}'.format(pmt, id0, id-1), SPE=SPE[:j-1], rec=rec[:j-1])
 >>>>>>> c7766bd9473ef15b7aa60790e5624a9c78c984b2
