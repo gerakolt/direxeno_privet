@@ -22,20 +22,25 @@
 
 
 \begin{document}
-The probability that $\{\text{PMT}_a,...\text{PMT}_z\}$ will create $\{n_{ai},...n_{zi}\}$ PEs at time $t_i$ is
 \begin{equation}
-P(n_{ai},..n_{zi})=\sum_n\text{Poisson}(n|N)\prod_c\text{Binom}(n_{ci}|n, Q_cY_idt_i)
+\eta=\frac{(n-\lambda_n)(m-\lambda_m)}{\lambda_n\lambda_n}
 \end{equation}
-The probability that $\{n_{ai},...n_{zi}\}$ PEs will be resolved in $\{\text{PMT}_a,...\text{PMT}_z\}$ due to PMT jitter and misalignment is
+where
 \begin{equation}
-P(n_{ai},..n_{zi})=\sum_{n}\text{Poisson}(n|N)\prod_c\text{Binom}\left(n_{ci}|n,Q_cdt_in\sum_jdt_jY_j\frac{e^{-(i-j-T_c)^2/(2\sigma_c^2)}}{\sqrt{2\pi}\sigma_c}\right)
+\lambda_i(x)=NQ_idS_i(x)=NQ_i(dS+\delta S_i(x))=NdSQ_i(1+\delta_i(x))
 \end{equation}
-$P$ alignment
+\begin{equation}
+\langle\eta\rangle=\int_Vd^3xP(x)\sum_{n,m}\frac{(n-\lambda_n)(m-\lambda_m)}{\lambda_n\lambda_n}\text{Poisson}(n|\lambda_n)\text{Poisson}(m|\lambda_m)
+\end{equation}
 \begin{equation}
 \begin{split}
-P_0(n_{a0},..n_{z0})&=\sum_j\prod_{k<j}P(0_{ak}..0_{zk})P(n_{aj},..n_{zj})\\
-P_0(n_{ai},..n_{zi})&=\sum_j\prod_{k<j}P(0_{ak}..0_{zk})\left(1-P(0_{ak}..0_{zk})\right)P(n_{aj+i},..n_{zj+i})
+\int_Vd^3xP(x)\sum_{n,m}\left[nm-NdS\left(nQ_m(1+\delta_m)+mQ_n(1+\delta_n)\right)\right]\frac{1-\delta_n-\delta_m}{N^2dS^2Q_nQ_m}\cdot\\
+\text{Poisson}(n|NdSQ_n)\text{Poisson}(m|NdSQ_m)\left[1+\delta_n(n-NdSQ_n)\right]\left[1+\delta_m(m-NdSQ_m)\right]
 \end{split}
-\end{equation} 
+\end{equation}
+\begin{equation}
+\begin{split}
+\end{split}
+\end{equation}
 \end{document}
 

@@ -28,7 +28,7 @@ rec=np.recarray(1000, dtype=[
     ('init_wf', 'i8', len(pmts))
     ])
 
-path='/home/gerak/Desktop/DireXeno/190803/BG/'
+path='/home/gerak/Desktop/DireXeno/190803/Co57B/'
 file=open(path+'out.DXD', 'rb')
 Data=np.fromfile(file, np.float32, (PMT_num+4)*(time_samples+2)*id)
 j=0
