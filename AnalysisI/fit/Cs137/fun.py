@@ -66,7 +66,7 @@ def make_3D(t, N, F, Tf, Ts, R, a, eta, Q, T, St, dS, PEs, r_mash, V_mash, Xcov)
     dr=r[1]-r[0]
     n=np.arange(np.floor(N-3*np.sqrt(N)), np.ceil(N+3*np.sqrt(N)))
     pois=poisson.pmf(n,N)
-    nu=np.arange(30)
+    nu=np.arange(20)
     model=np.sum(((1-R)*Promt(r, F, Tf, Ts, T, St)+R*(1-eta)*Recomb(r, F, Tf, Ts, T, St,a,eta)).reshape(len(t), 100, len(T)), axis=1)
     frac=np.sum(model[:int(np.mean(T)+100)], axis=0)
     if np.any(model<0):
@@ -149,7 +149,7 @@ def Sim(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs, mu, x1, x2, r_mash, V_mash):
     N_events=10000
     Strig=2
     d=np.zeros((N_events, 200, len(Q)))
-    H=np.zeros((30, 200, len(Q)))
+    H=np.zeros((50, 200, len(Q)))
     G=np.zeros((250,200))
     trp=np.zeros((N_events, 200, len(Q)))
     sng=np.zeros((N_events, 200, len(Q)))

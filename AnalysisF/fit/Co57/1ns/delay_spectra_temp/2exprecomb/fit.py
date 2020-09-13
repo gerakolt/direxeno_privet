@@ -28,7 +28,7 @@ for i in range(len(pmts)-1):
 
 T_CsB=1564825612162-1564824285761
 T_BG=1564874707904-1564826183355
-path='/home/gerak/Desktop/DireXeno/190803/Co57/EventRecon/'
+path='/home/gerak/Desktop/DireXeno/190803/Co57B/EventRecon/'
 data=np.load(path+'H.npz')
 H=data['H'][:30,:,:]
 G=data['G']
@@ -148,7 +148,7 @@ def L(p):
     l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
 
     data=np.ravel(spectra)
-    lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:,0], axis=1)
+    lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:100,0], axis=1)
     I=np.arange(len(PEs)*len(lmda))
     model=poisson.pmf(PEs[I//len(lmda)], lmda[I%len(lmda)]).reshape(len(PEs), len(lmda))
     model=np.ravel(model/np.amax(model, axis=0)*np.amax(spectra, axis=0))
@@ -180,17 +180,16 @@ def L(p):
     return -l
 
 
-rec[0]=([0.22693669,  0.17382594,  0.13728296,  0.22261788,  0.22571661,  0.36328094],
- [42.62558435, 42.48068505, 42.57788661, 42.36605501, 42.56232302, 42.83865289],
-  [0.93682928,  0.64081057,  1.65302024,  0.81383639,  0.93244776,  0.99243741],
-  0.09522802,  2.82406609, 33.21924402,  0.42885251,  0.42341233,  0.27426652)
-
+rec[0]=( [0.22115049,  0.16550132,  0.13854544,  0.22185697,  0.22404989,  0.36315742],
+ [42.77823954, 42.63822317, 42.57538105, 42.67443359, 42.67509404, 42.68730998],
+  [1.12231578,  0.62974626,  0.55487258,  1.08325085,  0.8779115,   0.8899565],
+  0.09593308,  0.78911899, 31.75915812,  0.54248159,  0.35601112,  0.21202624)
 
 # p=minimize(L, make_ps(rec_to_p(rec)))
 # rec=p_to_rec(p.x)
 
 m=make_3D(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
-s, GS, GS_spectrum, Gtrp, Gsng, GRtrp, GRsng=Sim(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
+s, GS, GS_spectrum, Sspectra, Gtrp, Gsng, GRtrp, GRsng=Sim(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs)
 
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):
@@ -202,13 +201,15 @@ for i in range(len(pmts)):
 fig.text(0.04, 0.5, r'$N_{events}\sum_n nH_{ni}$', va='center', rotation='vertical', fontsize=15)
 
 fig, ax=plt.subplots(2,3)
-lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:,0], axis=1)
+lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:100,0], axis=1)
 I=np.arange(len(PEs)*len(lmda))
 model=poisson.pmf(PEs[I//len(lmda)], lmda[I%len(lmda)]).reshape(len(PEs), len(lmda))
 model=model/np.amax(model, axis=0)*np.amax(spectra, axis=0)
+Sspectra=Sspectra/np.amax(Sspectra, axis=0)*np.amax(spectra, axis=0)
 for i in range(len(pmts)):
     np.ravel(ax)[i].plot(PEs, spectra[:,i], 'ko', label='spectrum - PMT{}'.format(pmts[i]))
-    np.ravel(ax)[i].plot(PEs, model[:,i], 'r-.')
+    np.ravel(ax)[i].plot(PEs, model[:,i], 'r-.', label='model')
+    np.ravel(ax)[i].plot(PEs, Sspectra[:,i], 'g.-', label='sim')
     np.ravel(ax)[i].legend()
 
 fig, ax=plt.subplots(3,5)

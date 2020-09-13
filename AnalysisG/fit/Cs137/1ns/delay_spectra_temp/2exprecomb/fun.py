@@ -85,7 +85,7 @@ def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
 def Sim2(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs):
     f=np.sum(make_recomb(np.arange(1000*20)/100, a, eta).reshape(1000,20), axis=1)
     f[-1]=1-np.sum(f[:-1])
-    N_events=200
+    N_events=10000
     Strig=2
     d=np.zeros((N_events, 200, len(Q)))
     H=np.zeros((30, 200, len(Q)))
@@ -115,12 +115,13 @@ def Sim2(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs):
         fast_i=np.nonzero(ch==0)[0]
         costheta=np.random.uniform(-1,1)
         phi=np.random.uniform(0,2*np.pi)
-        r2=np.random.uniform(0,(10/40)**2)
-        v=np.array([np.sqrt(r2)*np.sin(np.arccos(costheta))*np.cos(phi), np.sqrt(r2)*np.sin(np.arccos(costheta))*np.sin(phi), np.sqrt(r2)*costheta])
+        r3=np.random.uniform(0,(10/40)**3)
+        r=r3**(1/3)
+        v=np.array([r*np.sin(np.arccos(costheta))*np.cos(phi), r*np.sin(np.arccos(costheta))*np.sin(phi), r*costheta])
         costheta=np.random.uniform(-1,1, len(t))
         phi=np.random.uniform(0,2*np.pi, len(t))
         us=np.vstack((np.vstack((np.sin(np.arccos(costheta))*np.cos(phi), np.sin(np.arccos(costheta))*np.sin(phi))), costheta))
-        pmt_hit=whichPMT(v, us, pmt_mid, pmt_r, pmt_up, r)
+        pmt_hit=whichPMT(v, us, pmt_mid, pmt_r, pmt_up)
         for j in range(len(Q)):
             hits=np.nonzero(pmt_hit==j)[0]
             ind=np.nonzero(1==np.random.choice(2, size=len(hits), replace=True, p=[1-Q[j], Q[j]]))[0]
@@ -158,13 +159,13 @@ def Sim2(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs):
 
 
 
-def whichPMT(v, us, mid, rt, up, r):
-    t=np.sqrt(1-np.sum(np.cross(us.T, v)**2, axis=1))-np.matmul(us.T,v)
-    x=v*np.ones_like(us.T)+(us*t).T
-    n=np.argmax(np.matmul(x,mid.T), axis=1)
-    y=x-(np.sum(mid[n]*x, axis=1)*mid[n].T).T
-    n[np.logical_or(np.abs(np.sum(y*rt[n], axis=1))>np.sum(rt[n]**2, axis=1), np.abs(np.sum(y*up[n], axis=1))>np.sum(up[n]**2, axis=1))]=-1
-    return n
+def whichPMT(v, us, mid, rt, up):
+    hits=np.zeros(len(us[0]))-1
+    for i in range(len(mid)):
+        a=(1-np.sum(mid[i]*v, axis=0))/np.sum(us.T*mid[i], axis=1)
+        r=v+(a*us).T-mid[i]
+        hits[np.nonzero(np.logical_and(a>0, np.logical_and(np.abs(np.sum(r*rt[i], axis=1))<np.sum(rt[i]**2), np.abs(np.sum(r*up[i], axis=1))<np.sum(up[i]**2))))[0]]=i
+    return hits
 
 
 
@@ -203,14 +204,15 @@ def delta(t ,T, St):
 #     return dS/(4*np.pi)
 
 def make_dS(d, m, rt, up):
+    r=np.sqrt(np.sum(rt[0]**2))
     dS=np.zeros(len(m))
-    a=np.linspace(-1,1,100, endpoint=True)
+    a=np.linspace(-1,1,1000, endpoint=True)
     I=np.arange(len(a)**2)
     for i in range(len(dS)):
         x=m[i,0]+a[I//len(a)]*rt[i,0]+a[I%len(a)]*up[i,0]-d[0]
         y=m[i,1]+a[I//len(a)]*rt[i,1]+a[I%len(a)]*up[i,1]-d[1]
         z=m[i,2]+a[I//len(a)]*rt[i,2]+a[I%len(a)]*up[i,2]-d[2]
-        dS[i]=np.sum((1-np.sum(d*m[i]))/(np.sqrt(x**2+y**2+z**2)**3))*((a[1]-a[0])*r/2)**2
+        dS[i]=np.sum((1-np.sum(d*m[i]))/(np.sqrt(x**2+y**2+z**2)**3))*((a[1]-a[0])*r)**2
     return dS/(4*np.pi)
 
 
@@ -296,8 +298,10 @@ def make_3D(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
         return np.amin(model)*np.ones((len(nu), 100, len(Q)))
     I=np.arange(len(nu)*len(Q)*len(t)*len(n))
     B=np.zeros((len(nu), len(Q), len(t), len(n)))
-    for i in range(len(r_mash)):
-        print(i)
+    # for i in range(len(r_mash)):
+    for i in range(1):
+        V_mash[0]=1
+        # print(i)
         dS=make_dS(r_mash[i],  pmt_mid, pmt_r, pmt_up)
         B+=binom.pmf(nu[I//(len(Q)*len(t)*len(n))], (n[I%len(n)]).astype(int), dS[(I//(len(n)*len(t)))%len(Q)]*Q[(I//(len(n)*len(t)))%len(Q)]*model[(I//len(n))%len(t),(I//(len(n)*len(t)))%len(Q)]).reshape(len(nu),
          len(Q), len(t), len(n))*V_mash[i]

@@ -210,19 +210,20 @@ rec[0]=([2.45320036e-01, 1.66503338e-01, 1.60613707e-01, 2.35057522e-01,
 # p=minimize(L, make_ps(rec_to_p(rec)))
 # rec=p_to_rec(p.x)
 V=V_mash*np.exp(-(r_mash[:,x1]+np.sqrt((10/40)**2-r_mash[:,x2]**2-r_mash[:,-1]**2))/rec[0]['mu'])
-
+s, GS, GS_spectrum, Sspectra, Gtrp, Gsng, GRtrp, GRsng, Scov=Sim(rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0],
+                                                                    rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs, rec[0]['mu'], x1, x2, r_mash, V/np.sum(V))
 start_time = time.time()
 m, s_model, Mcov=make_3D(t, rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], dS, PEs, r_mash, V/np.sum(V), Xcov)
 dT=time.time()-start_time
-s, GS, GS_spectrum, Sspectra, Gtrp, Gsng, GRtrp, GRsng, Scov=Sim(rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0],
-                                                                    rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs, rec[0]['mu'], x1, x2, r_mash, V/np.sum(V))
+
 
 
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):
     np.ravel(ax)[i].plot(t, np.sum(H[:,:,i].T*np.arange(np.shape(H)[0]), axis=1)/np.sum(H[:,0,i]), 'ko', label='Data - PMT{}'.format(pmts[i]))
-    np.ravel(ax)[i].plot(t[:100], np.sum(m[:,:,i].T*np.arange(np.shape(m)[0]), axis=1), 'r.-', label='model', linewidth=3)
+    np.ravel(ax)[i].plot(t[:100], np.sum(m[:,:,i].T*np.arange(np.shape(m)[0]), axis=1), 'ro', label='model', linewidth=3)
     np.ravel(ax)[i].plot(t, np.sum(s[:,:,i].T*np.arange(np.shape(s)[0]), axis=1), 'g.', label='sim', linewidth=3)
+    np.ravel(ax)[i].errorbar(t, np.sum(s[:,:,i].T*np.arange(np.shape(s)[0]), axis=1), np.sum(np.sqrt(s[:,:,i].T)*np.arange(np.shape(s)[0]), axis=1)/np.sqrt(np.sum(Sspectra[:,0])), fmt='g.')
     # np.ravel(ax)[i].legend(fontsize=15)
     np.ravel(ax)[i].set_xlabel('Time [ns]', fontsize='15')
 fig.text(0.04, 0.5, r'$N_{events}\sum_n nH_{ni}$', va='center', rotation='vertical', fontsize=15)

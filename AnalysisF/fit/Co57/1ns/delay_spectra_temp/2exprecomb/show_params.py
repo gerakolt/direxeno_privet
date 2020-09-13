@@ -25,4 +25,8 @@ for name in names:
         plt.title(name)
         plt.plot(Rec[name][:len(ls)], 'ko')
 
+plt.figure()
+plt.title('L')
+plt.plot(ls, 'ko')
+
 plt.show()

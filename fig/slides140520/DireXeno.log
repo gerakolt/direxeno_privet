@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.8.12)  24 MAY 2020 08:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.8.12)  28 JUL 2020 05:00
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1465,11 +1465,11 @@ Package caption Info: End \AtBeginDocument code.
  (./DireXeno.nav) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for U+msa on input line 30.
+LaTeX Font Info:    Try loading font information for U+msa on input line 31.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 30.
+LaTeX Font Info:    Try loading font information for U+msb on input line 31.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1479,10 +1479,10 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <recons.png, id=72, 1387.584pt x 709.6914pt>
 File: recons.png Graphic file (type png)
 <use recons.png>
-Package pdftex.def Info: recons.png  used on input line 42.
+Package pdftex.def Info: recons.png  used on input line 43.
 (pdftex.def)             Requested size: 307.28987pt x 157.16135pt.
 
-Overfull \vbox (8.0174pt too high) detected at line 42
+Overfull \vbox (8.0174pt too high) detected at line 43
  []
 
 [3
@@ -1495,35 +1495,46 @@ Overfull \vbox (8.0174pt too high) detected at line 42
 <w.png, id=151, 1327.5999pt x 690.1785pt>
 File: w.png Graphic file (type png)
 <use w.png>
-Package pdftex.def Info: w.png  used on input line 58.
+Package pdftex.def Info: w.png  used on input line 59.
 (pdftex.def)             Requested size: 230.46739pt x 119.80363pt.
  [6
 
  <./w.png>]
-<Co57.png, id=178, 1327.5999pt x 690.1785pt>
-File: Co57.png Graphic file (type png)
-<use Co57.png>
-Package pdftex.def Info: Co57.png  used on input line 66.
-(pdftex.def)             Requested size: 153.64493pt x 79.86908pt.
-<Cs137.png, id=179, 1327.5999pt x 690.1785pt>
-File: Cs137.png Graphic file (type png)
-<use Cs137.png>
-Package pdftex.def Info: Cs137.png  used on input line 66.
-(pdftex.def)             Requested size: 153.64493pt x 79.86908pt.
+<UpDown.png, id=178, 1327.5999pt x 690.1785pt>
+File: UpDown.png Graphic file (type png)
+<use UpDown.png>
+Package pdftex.def Info: UpDown.png  used on input line 67.
+(pdftex.def)             Requested size: 138.2795pt x 71.88638pt.
+<UpDown2D.png, id=179, 1327.5999pt x 690.1785pt>
+File: UpDown2D.png Graphic file (type png)
+<use UpDown2D.png>
+Package pdftex.def Info: UpDown2D.png  used on input line 67.
+(pdftex.def)             Requested size: 138.2795pt x 71.88638pt.
  [7
 
- <./Co57.png> <./Cs137.png>]
-<temp.png, id=210, 1327.5999pt x 690.1785pt>
-File: temp.png Graphic file (type png)
-<use temp.png>
-Package pdftex.def Info: temp.png  used on input line 73.
-(pdftex.def)             Requested size: 307.28987pt x 159.74872pt.
+ <./UpDown.png> <./UpDown2D.png>]
+<Co57.png, id=208, 1327.5999pt x 690.1785pt>
+File: Co57.png Graphic file (type png)
+<use Co57.png>
+Package pdftex.def Info: Co57.png  used on input line 75.
+(pdftex.def)             Requested size: 153.64493pt x 79.86908pt.
+<Cs137.png, id=209, 1327.5999pt x 690.1785pt>
+File: Cs137.png Graphic file (type png)
+<use Cs137.png>
+Package pdftex.def Info: Cs137.png  used on input line 75.
+(pdftex.def)             Requested size: 153.64493pt x 79.86908pt.
 
 [8
 
- <./temp.png>] [9
+ <./Co57.png> <./Cs137.png>]
+<temp.png, id=239, 1327.5999pt x 690.1785pt>
+File: temp.png Graphic file (type png)
+<use temp.png>
+Package pdftex.def Info: temp.png  used on input line 82.
+(pdftex.def)             Requested size: 307.28987pt x 159.74872pt.
+ [9
 
-] [10
+ <./temp.png>] [10
 
 ] [11
 
@@ -1534,36 +1545,74 @@ Package pdftex.def Info: temp.png  used on input line 73.
 ] [14
 
 ]
-Overfull \hbox (23.87128pt too wide) detected at line 156
-\OML/cmm/m/it/10.95 K \OT1/cmr/m/n/10.95 = [][]
- []
-
 [15
 
 ] [16
 
-]
-Overfull \hbox (20.43285pt too wide) detected at line 176
-[] \OT1/cmr/m/n/10.95 = \OML/cmm/m/it/10.95 N[][] []
- []
-
-[17
+] [17
 
 ] [18
 
-] [19
+]
+<Co576PMTs.png, id=500, 1850.112pt x 969.8634pt>
+File: Co576PMTs.png Graphic file (type png)
+<use Co576PMTs.png>
+Package pdftex.def Info: Co576PMTs.png  used on input line 191.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+ [19
 
-] [20
+ <./Co576PMTs.png>]
+<Cs1376PMTs.png, id=528, 1850.112pt x 969.8634pt>
+File: Cs1376PMTs.png Graphic file (type png)
+<use Cs1376PMTs.png>
+Package pdftex.def Info: Cs1376PMTs.png  used on input line 198.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+ [20
 
-] [21
+ <./Cs1376PMTs.png>]
+<Co57Spec.png, id=555, 1850.112pt x 969.8634pt>
+File: Co57Spec.png Graphic file (type png)
+<use Co57Spec.png>
+Package pdftex.def Info: Co57Spec.png  used on input line 205.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+ [21
 
-] [22
+ <./Co57Spec.png>]
+<Cs137Spec.png, id=583, 1850.112pt x 969.8634pt>
+File: Cs137Spec.png Graphic file (type png)
+<use Cs137Spec.png>
+Package pdftex.def Info: Cs137Spec.png  used on input line 212.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+ [22
 
-] [23
+ <./Cs137Spec.png>]
+<Co57temp.png, id=610, 1850.112pt x 969.8634pt>
+File: Co57temp.png Graphic file (type png)
+<use Co57temp.png>
+Package pdftex.def Info: Co57temp.png  used on input line 219.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+ [23
 
-] [24
+ <./Co57temp.png>]
+<Co57Glob.png, id=637, 1850.112pt x 969.8634pt>
+File: Co57Glob.png Graphic file (type png)
+<use Co57Glob.png>
+Package pdftex.def Info: Co57Glob.png  used on input line 226.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+ [24
 
-] [25
+ <./Co57Glob.png>]
+<CsGlob.png, id=664, 1850.112pt x 969.8634pt>
+File: CsGlob.png Graphic file (type png)
+<use CsGlob.png>
+Package pdftex.def Info: CsGlob.png  used on input line 233.
+(pdftex.def)             Requested size: 307.28987pt x 161.08607pt.
+
+[25
+
+ <./CsGlob.png>] [26
+
+] [27
 
 ]
 \tf@nav=\write6
@@ -1575,28 +1624,22 @@ Overfull \hbox (20.43285pt too wide) detected at line 176
 \tf@snm=\write8
 \openout8 = `DireXeno.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 249.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 249.
- (./DireXeno.aux
-*************************************************
-* pdfbase warning: "rerun"
-* 
-* Rerun to get internal references right!
-*************************************************
-)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 249.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 249.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 275.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 275.
+ (./DireXeno.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 275.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 275.
 Package rerunfilecheck Info: File `DireXeno.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 31840 strings out of 494805
- 615694 string characters out of 6178000
- 790827 words of memory out of 5000000
- 34582 multiletter control sequences out of 15000+600000
+ 31895 strings out of 494805
+ 616493 string characters out of 6178000
+ 789826 words of memory out of 5000000
+ 34624 multiletter control sequences out of 15000+600000
  540295 words of font info for 62 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 61i,20n,96p,10410b,671s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 61i,14n,96p,10410b,671s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texl
@@ -1610,10 +1653,10 @@ cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.
 pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on DireXeno.pdf (25 pages, 457543 bytes).
+Output written on DireXeno.pdf (27 pages, 1535012 bytes).
 PDF statistics:
- 732 PDF objects out of 1000 (max. 8388607)
- 668 compressed objects within 7 object streams
- 51 named destinations out of 1000 (max. 500000)
- 68 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 802 PDF objects out of 1000 (max. 8388607)
+ 717 compressed objects within 8 object streams
+ 55 named destinations out of 1000 (max. 500000)
+ 113 words of extra memory for PDF output out of 10000 (max. 10000000)
 

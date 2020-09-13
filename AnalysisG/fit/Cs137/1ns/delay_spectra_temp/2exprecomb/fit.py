@@ -148,10 +148,7 @@ def L(p):
     l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
 
     data=np.ravel(spectra)
-    lmda=np.sum(np.matmul(np.transpose(m, (2,1,0)), np.arange(np.shape(m)[0]).reshape(np.shape(m)[0], 1))[:,:,0], axis=1)
-    I=np.arange(len(PEs)*len(lmda))
-    model=poisson.pmf(PEs[I//len(lmda)], lmda[I%len(lmda)]).reshape(len(PEs), len(lmda))
-    model=np.ravel(model/np.amax(model, axis=0)*np.amax(spectra, axis=0))
+    model=np.ravel(np.sum(spectra[:,0])*make_spectra(m, PEs))
     l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
 
     for i in range(len(pmts)-1):

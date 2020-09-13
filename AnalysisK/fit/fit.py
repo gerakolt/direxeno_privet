@@ -5,7 +5,7 @@ import os
 import sys
 from scipy.stats import poisson, binom
 from scipy.special import erf as erf
-from fun import Sim_fit, Sim
+from fun import Sim_fit, Sim, make_3D
 from minimize import minimize, make_ps
 from PMTgiom import make_mash
 pmts=[0,1,4,7,8,14]
@@ -21,7 +21,7 @@ for i in range(len(pmts)-1):
         delay_hs.append(data['h'])
         names.append('{}_{}'.format(pmts[i], pmts[j]))
 
-type=''
+type='B'
 source='Co57'
 path='/home/gerak/Desktop/DireXeno/190803/'+source+type+'/EventRecon/'
 data=np.load(path+'H.npz')
@@ -124,8 +124,8 @@ def L(p):
     l=0
     S, Sspectra, Scov=Sim_fit(rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0],
                                                                         rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs, rec[0]['mu'], x1, x2, left, right)
-    model=np.sum(H[:,0,0])*np.ravel(S)
-    data=np.ravel(H[:,:,:])
+    model=np.sum(H[:,0,0])*np.ravel(S[:,:100,:])
+    data=np.ravel(H[:,:100,:])
     if np.any(model<0):
         return 1e10*(1-np.amin(model))
     l+=np.sum(data*np.log((model+1e-10)/(data+1e-10))+data-model)
@@ -161,22 +161,42 @@ def L(p):
 
 start_time=time.time()
 
-rec[0]=([0.25128993, 0.18208689, 0.14521164, 0.22625167, 0.22880154, 0.37638903],
- [42.7081315, 42.4972396, 42.6176429, 42.5952143, 42.687681 , 42.8385368],
-  [1.0960238 , 0.60958328, 0.52843744, 1.17965295, 0.93081331, 0.86317713],
-   0.59208363, 7954.30192, 0.09218617, 1.05468747, 32.0438254, 0.55331351, 0.37412695, 0.26869122)
+rec[0]=([0.28609523, 0.21198892, 0.1661045 , 0.23595573, 0.2543458 , 0.46767996], [42.43727439, 42.48680044, 42.48223214, 42.61715417, 42.97131299, 42.35603571],
+ [1.14722701, 0.82496347, 0.71858647, 1.61434698, 1.48554624, 1.03053529], 2.57341188, 7920.93881033, 0.11035399, 0.94339727, 34.3602973, 0.5760872, 0.33983152, 0.36124252)
+
+L1=L(rec_to_p(rec))
+
 
 
 # p=minimize(L, make_ps(rec_to_p(rec), source))
+# M,Mspectra, Mcov=make_3D(rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0],
+#                                                                     rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs, rec[0]['mu'], x1, x2, Xcov)
 
 S, Sspectra, Scov, G, Gtrp, Gsng, GRtrp, GRsng, SN=Sim(rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0],
                                                                     rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs, rec[0]['mu'], x1, x2, left, right)
 
+
+
+rec[0]=([2.47449081e-01, 1.73455094e-01, 1.40915994e-01, 2.23938188e-01,
+2.27196744e-01, 4.03724823e-01], [4.30007358e+01, 4.27364088e+01,
+4.26244721e+01, 4.27050188e+01, 4.27595651e+01, 4.27768675e+01],
+[1.19129338e+00, 7.06773710e-01, 6.42329986e-01, 1.02327019e+00,
+8.84223879e-01, 9.07674808e-01], 5.53213718e-01, 7.83374741e+03,
+9.86594244e-02, 8.09728899e-01, 3.18503273e+01, 5.54707755e-01,
+3.85974402e-01, 2.39150776e-01)
+L2=L(rec_to_p(rec))
+S2, Sspectra2, Scov2, G2, Gtrp2, Gsng2, GRtrp2, GRsng2, SN2=Sim(rec['N'][0], rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0],
+                                                                    rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0], PEs, rec[0]['mu'], x1, x2, left, right)
+
+
+print(L1, L2)
 N=np.sum(H[:,0,0])
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):
     np.ravel(ax)[i].step(t, np.sum(H[:,:,i].T*np.arange(np.shape(H)[0]), axis=1)/(dt), label='Data - PMT{}'.format(pmts[i]), linewidth=3, where='post')
-    np.ravel(ax)[i].plot(t+0.5, N*np.sum(S[:,:,i].T*np.arange(np.shape(S)[0]), axis=1)/dt, 'go', label='sim', linewidth=3)
+    # np.ravel(ax)[i].plot(t[:100]+0.5, N*np.sum(M[:,:,i].T*np.arange(np.shape(M)[0]), axis=1)/dt, 'ro', label='model', linewidth=3)
+    np.ravel(ax)[i].plot(t+0.5, N*np.sum(S[:,:,i].T*np.arange(np.shape(S)[0]), axis=1)/dt, 'g.', label='sim', linewidth=3)
+    np.ravel(ax)[i].plot(t+0.5, N*np.sum(S2[:,:,i].T*np.arange(np.shape(S2)[0]), axis=1)/dt, 'r.', label='sim2', linewidth=3)
     np.ravel(ax)[i].errorbar(t+0.5, N*np.sum(S[:,:,i].T*np.arange(np.shape(S)[0]), axis=1)/dt, N*np.sqrt(np.sum(S[:,:,i].T*np.arange(np.shape(S)[0]), axis=1)/(dt*SN)), fmt='g.')
     np.ravel(ax)[i].set_xlabel('Time [ns]', fontsize='15')
 fig.text(0.04, 0.5, r'$N_{events}\sum_n nH_{ni}$', va='center', rotation='vertical', fontsize=15)
@@ -184,7 +204,9 @@ fig.text(0.04, 0.5, r'$N_{events}\sum_n nH_{ni}$', va='center', rotation='vertic
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):
     np.ravel(ax)[i].plot(PEs, spectra[:,i], 'ko', label='spectrum - PMT{}'.format(pmts[i]))
+    # np.ravel(ax)[i].plot(PEs, N*Mspectra[:,i], 'r.', label='model')
     np.ravel(ax)[i].plot(PEs, N*Sspectra[:,i], 'g.', label='sim')
+    np.ravel(ax)[i].plot(PEs, N*Sspectra2[:,i], 'r.', label='sim2')
     np.ravel(ax)[i].errorbar(PEs, N*Sspectra[:,i], N*np.sqrt(Sspectra[:,i]/SN), fmt='g.')
     np.ravel(ax)[i].legend()
 
@@ -208,7 +230,9 @@ fig, bx=plt.subplots(3,5)
 k=0
 for k in range(15):
     np.ravel(bx)[k].step(Xcov, cov[:,k], where='mid')
+    # np.ravel(bx)[k].plot(Xcov, Mcov[:,k]*N, 'r.', label='model')
     np.ravel(bx)[k].plot(Xcov, Scov[:,k]*N, 'g.', label='sim')
+    np.ravel(bx)[k].plot(Xcov, Scov2[:,k]*N, 'r.', label='sim')
     np.ravel(bx)[k].errorbar(Xcov, Scov[:,k]*N, N*np.sqrt(Scov[:,k]/SN), fmt='g.')
     np.ravel(bx)[k].legend()
 

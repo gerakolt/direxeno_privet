@@ -6,8 +6,8 @@ import matplotlib.colors as mcolors
 def func(x, a_pad, a, m_pad, s_pad, m, s):
     return a_pad*np.exp(-0.5*(x-m_pad)**2/s_pad**2)+a*np.exp(-0.5*(x-m)**2/s**2)
 
-pmt=18
-path='/home/gerak/Desktop/DireXeno/130520/pulser/PMT{}/'.format(pmt)
+pmt=0
+path='/home/gerak/Desktop/DireXeno/190803/pulser/PMT{}/'.format(pmt)
 data=np.load(path+'cuts.npz')
 blw_cut=data['blw_cut']
 height_cut=data['height_cut']
@@ -77,7 +77,7 @@ ax3.axvline(-np.amin(spe), ymin=0, ymax=1)
 ax5.legend()
 
 
-np.savez(path+'areas', areas=areas/p[-2], H_areas=h_area, rng_area=rng, spe=spe)
+# np.savez(path+'areas', areas=areas/p[-2], H_areas=h_area, rng_area=rng, spe=spe)
 # np.savez(path+'cuts', blw_cut=blw_cut, height_cut=height_cut, left=left, right=right, dh3_cut=dh3_cut, spk_cut=spk_cut)
 
 plt.show()

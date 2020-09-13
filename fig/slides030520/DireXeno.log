@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.8.12)  7 MAY 2020 07:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.8.12)  6 JUL 2020 10:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1480,17 +1480,278 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [2
 
 ]
-<recons.png, id=70, 1387.584pt x 709.6914pt>
+<recon-0.png, id=81, 851.18pt x 425.59pt>
+File: recon-0.png Graphic file (type png)
+<use recon-0.png>
+Package pdftex.def Info: recon-0.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-0.png>
+<a0,fr0>
+<recon-1.png, id=90, 851.18pt x 425.59pt>
+File: recon-1.png Graphic file (type png)
+<use recon-1.png>
+Package pdftex.def Info: recon-1.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-1.png> <a0,fr1>
+<recon-2.png, id=99, 851.18pt x 425.59pt>
+File: recon-2.png Graphic file (type png)
+<use recon-2.png>
+Package pdftex.def Info: recon-2.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-2.png> <a0,fr2>
+<recon-3.png, id=108, 851.18pt x 425.59pt>
+File: recon-3.png Graphic file (type png)
+<use recon-3.png>
+Package pdftex.def Info: recon-3.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-3.png>
+<a0,fr3>
+<recon-4.png, id=117, 851.18pt x 425.59pt>
+File: recon-4.png Graphic file (type png)
+<use recon-4.png>
+Package pdftex.def Info: recon-4.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-4.png> <a0,fr4>
+<recon-5.png, id=126, 851.18pt x 425.59pt>
+File: recon-5.png Graphic file (type png)
+<use recon-5.png>
+Package pdftex.def Info: recon-5.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-5.png> <a0,fr5>
+<recon-6.png, id=135, 851.18pt x 425.59pt>
+File: recon-6.png Graphic file (type png)
+<use recon-6.png>
+Package pdftex.def Info: recon-6.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-6.png>
+<a0,fr6>
+<recon-7.png, id=144, 851.18pt x 425.59pt>
+File: recon-7.png Graphic file (type png)
+<use recon-7.png>
+Package pdftex.def Info: recon-7.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-7.png> <a0,fr7>
+<recon-8.png, id=153, 851.18pt x 425.59pt>
+File: recon-8.png Graphic file (type png)
+<use recon-8.png>
+Package pdftex.def Info: recon-8.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-8.png> <a0,fr8>
+<recon-9.png, id=162, 851.18pt x 425.59pt>
+File: recon-9.png Graphic file (type png)
+<use recon-9.png>
+Package pdftex.def Info: recon-9.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-9.png>
+<a0,fr9>
+<recon-10.png, id=171, 851.18pt x 425.59pt>
+File: recon-10.png Graphic file (type png)
+<use recon-10.png>
+Package pdftex.def Info: recon-10.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-10.png> <a0,fr10>
+<recon-11.png, id=180, 851.18pt x 425.59pt>
+File: recon-11.png Graphic file (type png)
+<use recon-11.png>
+Package pdftex.def Info: recon-11.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-11.png> <a0,fr11>
+<recon-12.png, id=189, 851.18pt x 425.59pt>
+File: recon-12.png Graphic file (type png)
+<use recon-12.png>
+Package pdftex.def Info: recon-12.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-12.png> <a0,fr12>
+<recon-13.png, id=198, 851.18pt x 425.59pt>
+File: recon-13.png Graphic file (type png)
+<use recon-13.png>
+Package pdftex.def Info: recon-13.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-13.png> <a0,fr13>
+<recon-14.png, id=207, 851.18pt x 425.59pt>
+File: recon-14.png Graphic file (type png)
+<use recon-14.png>
+Package pdftex.def Info: recon-14.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-14.png> <a0,fr14>
+<recon-15.png, id=216, 851.18pt x 425.59pt>
+File: recon-15.png Graphic file (type png)
+<use recon-15.png>
+Package pdftex.def Info: recon-15.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-15.png> <a0,fr15>
+<recon-16.png, id=225, 851.18pt x 425.59pt>
+File: recon-16.png Graphic file (type png)
+<use recon-16.png>
+Package pdftex.def Info: recon-16.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-16.png> <a0,fr16>
+<recon-17.png, id=235, 851.18pt x 425.59pt>
+File: recon-17.png Graphic file (type png)
+<use recon-17.png>
+Package pdftex.def Info: recon-17.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-17.png> <a0,fr17>
+<recon-18.png, id=244, 851.18pt x 425.59pt>
+File: recon-18.png Graphic file (type png)
+<use recon-18.png>
+Package pdftex.def Info: recon-18.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-18.png> <a0,fr18>
+<recon-19.png, id=253, 851.18pt x 425.59pt>
+File: recon-19.png Graphic file (type png)
+<use recon-19.png>
+Package pdftex.def Info: recon-19.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-19.png> <a0,fr19>
+<recon-20.png, id=262, 851.18pt x 425.59pt>
+File: recon-20.png Graphic file (type png)
+<use recon-20.png>
+Package pdftex.def Info: recon-20.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-20.png> <a0,fr20>
+<recon-21.png, id=271, 851.18pt x 425.59pt>
+File: recon-21.png Graphic file (type png)
+<use recon-21.png>
+Package pdftex.def Info: recon-21.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-21.png> <a0,fr21>
+<recon-22.png, id=280, 851.18pt x 425.59pt>
+File: recon-22.png Graphic file (type png)
+<use recon-22.png>
+Package pdftex.def Info: recon-22.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-22.png> <a0,fr22>
+<recon-23.png, id=289, 851.18pt x 425.59pt>
+File: recon-23.png Graphic file (type png)
+<use recon-23.png>
+Package pdftex.def Info: recon-23.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-23.png> <a0,fr23>
+<recon-24.png, id=298, 851.18pt x 425.59pt>
+File: recon-24.png Graphic file (type png)
+<use recon-24.png>
+Package pdftex.def Info: recon-24.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-24.png> <a0,fr24>
+<recon-25.png, id=307, 851.18pt x 425.59pt>
+File: recon-25.png Graphic file (type png)
+<use recon-25.png>
+Package pdftex.def Info: recon-25.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-25.png> <a0,fr25>
+<recon-26.png, id=316, 851.18pt x 425.59pt>
+File: recon-26.png Graphic file (type png)
+<use recon-26.png>
+Package pdftex.def Info: recon-26.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-26.png> <a0,fr26>
+<recon-27.png, id=325, 851.18pt x 425.59pt>
+File: recon-27.png Graphic file (type png)
+<use recon-27.png>
+Package pdftex.def Info: recon-27.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-27.png> <a0,fr27>
+<recon-28.png, id=334, 851.18pt x 425.59pt>
+File: recon-28.png Graphic file (type png)
+<use recon-28.png>
+Package pdftex.def Info: recon-28.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-28.png> <a0,fr28>
+<recon-29.png, id=343, 851.18pt x 425.59pt>
+File: recon-29.png Graphic file (type png)
+<use recon-29.png>
+Package pdftex.def Info: recon-29.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-29.png> <a0,fr29>
+<recon-30.png, id=352, 851.18pt x 425.59pt>
+File: recon-30.png Graphic file (type png)
+<use recon-30.png>
+Package pdftex.def Info: recon-30.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-30.png> <a0,fr30>
+<recon-31.png, id=361, 851.18pt x 425.59pt>
+File: recon-31.png Graphic file (type png)
+<use recon-31.png>
+Package pdftex.def Info: recon-31.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-31.png> <a0,fr31>
+<recon-32.png, id=370, 851.18pt x 425.59pt>
+File: recon-32.png Graphic file (type png)
+<use recon-32.png>
+Package pdftex.def Info: recon-32.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-32.png> <a0,fr32>
+<recon-33.png, id=379, 851.18pt x 425.59pt>
+File: recon-33.png Graphic file (type png)
+<use recon-33.png>
+Package pdftex.def Info: recon-33.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-33.png> <a0,fr33>
+<recon-34.png, id=388, 851.18pt x 425.59pt>
+File: recon-34.png Graphic file (type png)
+<use recon-34.png>
+Package pdftex.def Info: recon-34.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-34.png> <a0,fr34>
+<recon-35.png, id=397, 851.18pt x 425.59pt>
+File: recon-35.png Graphic file (type png)
+<use recon-35.png>
+Package pdftex.def Info: recon-35.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-35.png> <a0,fr35>
+<recon-36.png, id=406, 851.18pt x 425.59pt>
+File: recon-36.png Graphic file (type png)
+<use recon-36.png>
+Package pdftex.def Info: recon-36.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-36.png> <a0,fr36>
+<recon-37.png, id=415, 851.18pt x 425.59pt>
+File: recon-37.png Graphic file (type png)
+<use recon-37.png>
+Package pdftex.def Info: recon-37.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-37.png> <a0,fr37>
+<recon-38.png, id=424, 851.18pt x 425.59pt>
+File: recon-38.png Graphic file (type png)
+<use recon-38.png>
+Package pdftex.def Info: recon-38.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-38.png>
+<a0,fr38>
+<recon-39.png, id=433, 851.18pt x 425.59pt>
+File: recon-39.png Graphic file (type png)
+<use recon-39.png>
+Package pdftex.def Info: recon-39.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-39.png> <a0,fr39>
+<recon-40.png, id=442, 851.18pt x 425.59pt>
+File: recon-40.png Graphic file (type png)
+<use recon-40.png>
+Package pdftex.def Info: recon-40.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-40.png> <a0,fr40>
+<recon-41.png, id=451, 851.18pt x 425.59pt>
+File: recon-41.png Graphic file (type png)
+<use recon-41.png>
+Package pdftex.def Info: recon-41.png  used on input line 38.
+(pdftex.def)             Requested size: 851.1779pt x 425.58894pt.
+ <./recon-41.png> <a0,fr41>
+<recons.png, id=478, 1387.584pt x 709.6914pt>
 File: recons.png Graphic file (type png)
 <use recons.png>
 Package pdftex.def Info: recons.png  used on input line 38.
 (pdftex.def)             Requested size: 307.28987pt x 157.16135pt.
- [3
+
+Overfull \vbox (111.9549pt too high) detected at line 38
+ []
+
+[3
 
  <./recons.png>] [4
 
 ]
-<alignment.png, id=124, 1387.584pt x 709.6914pt>
+<alignment.png, id=533, 1387.584pt x 709.6914pt>
 File: alignment.png Graphic file (type png)
 <use alignment.png>
 Package pdftex.def Info: alignment.png  used on input line 56.
@@ -1498,7 +1759,7 @@ Package pdftex.def Info: alignment.png  used on input line 56.
  [5
 
  <./alignment.png>]
-<sim.png, id=153, 1558.8639pt x 853.5087pt>
+<sim.png, id=562, 1558.8639pt x 853.5087pt>
 File: sim.png Graphic file (type png)
 <use sim.png>
 Package pdftex.def Info: sim.png  used on input line 66.
@@ -1516,7 +1777,7 @@ s been already used, duplicate ignored
                                                   
 l.66 \end{frame}
                  <./sim.png>]
-<data.png, id=181, 1790.1279pt x 950.3505pt>
+<data.png, id=590, 1790.1279pt x 950.3505pt>
 File: data.png Graphic file (type png)
 <use data.png>
 Package pdftex.def Info: data.png  used on input line 73.
@@ -1524,7 +1785,7 @@ Package pdftex.def Info: data.png  used on input line 73.
  [7
 
  <./data.png>]
-<sim1000.png, id=210, 1790.1279pt x 950.3505pt>
+<sim1000.png, id=619, 1790.1279pt x 950.3505pt>
 File: sim1000.png Graphic file (type png)
 <use sim1000.png>
 Package pdftex.def Info: sim1000.png  used on input line 80.
@@ -1576,7 +1837,7 @@ Overfull \hbox (20.43285pt too wide) detected at line 185
 ] [23
 
 ]
-<data_event.png, id=625, 1790.1279pt x 950.3505pt>
+<data_event.png, id=1034, 1790.1279pt x 950.3505pt>
 File: data_event.png Graphic file (type png)
 <use data_event.png>
 Package pdftex.def Info: data_event.png  used on input line 243.
@@ -1584,7 +1845,7 @@ Package pdftex.def Info: data_event.png  used on input line 243.
  [24
 
  <./data_event.png>]
-<fitA.png, id=652, 1790.1279pt x 950.3505pt>
+<fitA.png, id=1061, 1790.1279pt x 950.3505pt>
 File: fitA.png Graphic file (type png)
 <use fitA.png>
 Package pdftex.def Info: fitA.png  used on input line 250.
@@ -1599,7 +1860,7 @@ Overfull \hbox (11.10335pt too wide) in paragraph at lines 285--285
 [26
 
 ]
-<model_delay.png, id=706, 1790.1279pt x 950.3505pt>
+<model_delay.png, id=1115, 1790.1279pt x 950.3505pt>
 File: model_delay.png Graphic file (type png)
 <use model_delay.png>
 Package pdftex.def Info: model_delay.png  used on input line 295.
@@ -1607,7 +1868,7 @@ Package pdftex.def Info: model_delay.png  used on input line 295.
  [27
 
  <./model_delay.png>]
-<totalPE.png, id=734, 1790.1279pt x 950.3505pt>
+<totalPE.png, id=1143, 1790.1279pt x 950.3505pt>
 File: totalPE.png Graphic file (type png)
 <use totalPE.png>
 Package pdftex.def Info: totalPE.png  used on input line 308.
@@ -1615,7 +1876,7 @@ Package pdftex.def Info: totalPE.png  used on input line 308.
  [28
 
  <./totalPE.png>]
-<fitB.png, id=761, 1790.1279pt x 950.3505pt>
+<fitB.png, id=1170, 1790.1279pt x 950.3505pt>
 File: fitB.png Graphic file (type png)
 <use fitB.png>
 Package pdftex.def Info: fitB.png  used on input line 314.
@@ -1623,7 +1884,7 @@ Package pdftex.def Info: fitB.png  used on input line 314.
  [29
 
  <./fitB.png>]
-<delay_fit1.png, id=788, 1790.1279pt x 950.3505pt>
+<delay_fit1.png, id=1197, 1790.1279pt x 950.3505pt>
 File: delay_fit1.png Graphic file (type png)
 <use delay_fit1.png>
 Package pdftex.def Info: delay_fit1.png  used on input line 320.
@@ -1631,7 +1892,7 @@ Package pdftex.def Info: delay_fit1.png  used on input line 320.
  [30
 
  <./delay_fit1.png>]
-<spectra_fit1.png, id=816, 1790.1279pt x 950.3505pt>
+<spectra_fit1.png, id=1225, 1790.1279pt x 950.3505pt>
 File: spectra_fit1.png Graphic file (type png)
 <use spectra_fit1.png>
 Package pdftex.def Info: spectra_fit1.png  used on input line 326.
@@ -1646,7 +1907,7 @@ Overfull \hbox (11.10335pt too wide) in paragraph at lines 356--356
 [32
 
 ]
-<f_dc.png, id=869, 1790.1279pt x 950.3505pt>
+<f_dc.png, id=1278, 1790.1279pt x 950.3505pt>
 File: f_dc.png Graphic file (type png)
 <use f_dc.png>
 Package pdftex.def Info: f_dc.png  used on input line 363.
@@ -1658,7 +1919,7 @@ Package pdftex.def Info: f_dc.png  used on input line 363.
 ] [35
 
 ]
-<SPE_area.png, id=947, 1790.1279pt x 950.3505pt>
+<SPE_area.png, id=1356, 1790.1279pt x 950.3505pt>
 File: SPE_area.png Graphic file (type png)
 <use SPE_area.png>
 Package pdftex.def Info: SPE_area.png  used on input line 394.
@@ -1670,7 +1931,7 @@ Package pdftex.def Info: SPE_area.png  used on input line 394.
 ] [38
 
 ]
-<data_fit.png, id=1027, 1790.1279pt x 950.3505pt>
+<data_fit.png, id=1435, 1790.1279pt x 950.3505pt>
 File: data_fit.png Graphic file (type png)
 <use data_fit.png>
 Package pdftex.def Info: data_fit.png  used on input line 422.
@@ -1678,7 +1939,7 @@ Package pdftex.def Info: data_fit.png  used on input line 422.
  [39
 
  <./data_fit.png>]
-<delay_fit.png, id=1054, 1790.1279pt x 950.3505pt>
+<delay_fit.png, id=1463, 1790.1279pt x 950.3505pt>
 File: delay_fit.png Graphic file (type png)
 <use delay_fit.png>
 Package pdftex.def Info: delay_fit.png  used on input line 428.
@@ -1686,7 +1947,7 @@ Package pdftex.def Info: delay_fit.png  used on input line 428.
  [40
 
  <./delay_fit.png>]
-<spectra_fit.png, id=1081, 1790.1279pt x 950.3505pt>
+<spectra_fit.png, id=1490, 1790.1279pt x 950.3505pt>
 File: spectra_fit.png Graphic file (type png)
 <use spectra_fit.png>
 Package pdftex.def Info: spectra_fit.png  used on input line 434.
@@ -1694,7 +1955,7 @@ Package pdftex.def Info: spectra_fit.png  used on input line 434.
  [41
 
  <./spectra_fit.png>]
-<area_fit.png, id=1108, 1790.1279pt x 950.3505pt>
+<area_fit.png, id=1517, 1790.1279pt x 950.3505pt>
 File: area_fit.png Graphic file (type png)
 <use area_fit.png>
 Package pdftex.def Info: area_fit.png  used on input line 441.
@@ -1702,7 +1963,7 @@ Package pdftex.def Info: area_fit.png  used on input line 441.
  [42
 
  <./area_fit.png>]
-<DC_fit.png, id=1136, 1790.1279pt x 950.3505pt>
+<DC_fit.png, id=1544, 1790.1279pt x 950.3505pt>
 File: DC_fit.png Graphic file (type png)
 <use DC_fit.png>
 Package pdftex.def Info: DC_fit.png  used on input line 447.
@@ -1724,13 +1985,7 @@ Package pdftex.def Info: DC_fit.png  used on input line 447.
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 463.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 463.
- (./DireXeno.aux
-*************************************************
-* pdfbase warning: "rerun"
-* 
-* Rerun to get internal references right!
-*************************************************
-)
+ (./DireXeno.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 463.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 463.
 Package rerunfilecheck Info: File `DireXeno.out' has not changed.
@@ -1741,10 +1996,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 31998 strings out of 494805
- 617677 string characters out of 6178000
- 793826 words of memory out of 5000000
- 34687 multiletter control sequences out of 15000+600000
+ 32392 strings out of 494805
+ 624198 string characters out of 6178000
+ 793827 words of memory out of 5000000
+ 35035 multiletter control sequences out of 15000+600000
  540295 words of font info for 62 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
  61i,20n,96p,10391b,671s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1763,10 +2018,10 @@ b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
-Output written on DireXeno.pdf (44 pages, 1982897 bytes).
+Output written on DireXeno.pdf (44 pages, 3465946 bytes).
 PDF statistics:
- 1261 PDF objects out of 1440 (max. 8388607)
- 1143 compressed objects within 12 object streams
+ 1671 PDF objects out of 1728 (max. 8388607)
+ 1327 compressed objects within 14 object streams
  90 named destinations out of 1000 (max. 500000)
- 138 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1166 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -9,8 +9,8 @@ def find_trig(wf):
     mid=0.5*(bl+top)
     return np.argmin(np.abs(wf[:400]-mid))
 
-pmt=18
-path='/home/gerak/Desktop/DireXeno/130520/pulser/PMT{}/'.format(pmt)
+pmt=0
+path='/home/gerak/Desktop/DireXeno/190803/pulser/PMT{}/'.format(pmt)
 data=np.load(path+'cuts.npz')
 blw_cut=data['blw_cut']
 height_cut=data['height_cut']
@@ -23,7 +23,7 @@ pmts=np.array([0,0,0,0,0,5,10,11,13,15,16,18,19])
 chns=[0,1,2,3,4,5,6,7,8,9,10,11,13]
 PMT_num=12
 time_samples=1024
-path='/home/gerak/Desktop/DireXeno/130520/pulser/'.format(pmt)
+path='/home/gerak/Desktop/DireXeno/190803/pulser/'.format(pmt)
 file=open(path+'out.DXD', 'rb')
 
 id=0
@@ -76,7 +76,14 @@ while id<1e5:
         rec[j]['spe']=np.zeros(1000)
     else:
         rec[j]['spe']=np.roll(wf, 200-init10)
+        plt.figure()
+        plt.plot(wf+bl, 'k.')
+        plt.axhline(y=np.mean(wf+bl), xmin=0, xmax=1, linewidth=3, color='b')
+        plt.axhline(y=np.median(wf+bl), xmin=0, xmax=1, linewidth=3, color='r')
+        x=np.arange(1000)
+        plt.fill_between(x[np.argmin(wf)-100:np.argmin(wf)+200], y1=np.amin(wf)+bl, y2=bl, alpha=0.5)
+        plt.show()
 
     j+=1
     id+=1
-np.savez(path+'PMT{}/spe'.format(pmt), rec=rec[:j-1])
+# np.savez(path+'PMT{}/spe'.format(pmt), rec=rec[:j-1])

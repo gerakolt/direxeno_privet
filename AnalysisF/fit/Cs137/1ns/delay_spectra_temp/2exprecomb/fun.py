@@ -10,13 +10,15 @@ from scipy.special import comb
 from PMTgiom import make_pmts
 from scipy.signal import convolve2d
 
+pmts=[0,1,4,7,8,14]
 
+pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn, r=make_pmts(pmts)
 
 
 def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
     f=np.sum(make_recomb(np.arange(1000*20)/100, a, eta).reshape(1000,20), axis=1)
     f[-1]=1-np.sum(f[:-1])
-    N_events=200
+    N_events=2000
     Strig=2
     d=np.zeros((N_events, 200, len(Q)))
     H=np.zeros((30, 200, len(Q)))
@@ -78,6 +80,74 @@ def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
 
 
 
+def Sim2(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
+    f=np.sum(make_recomb(np.arange(1000*20)/100, a, eta).reshape(1000,20), axis=1)
+    f[-1]=1-np.sum(f[:-1])
+    N_events=2000
+    Strig=2
+    d=np.zeros((N_events, 200, len(Q)))
+    H=np.zeros((30, 200, len(Q)))
+    G=np.zeros((250,200))
+    trp=np.zeros((N_events, 200, len(Q)))
+    sng=np.zeros((N_events, 200, len(Q)))
+    Rtrp=np.zeros((N_events, 200, len(Q)))
+    Rsng=np.zeros((N_events, 200, len(Q)))
+    Gtrp=np.zeros((250,200))
+    Gsng=np.zeros((250,200))
+    GRtrp=np.zeros((250,200))
+    GRsng=np.zeros((250,200))
+    for i in range(N_events):
+        costheta=np.random.uniform(-1,1)
+        phi=np.random.uniform(2*np.pi)
+        r=np.random.uniform()
+        dS=make_dS(np.array([r*np.sin(np.arccos(costheta))*np.cos(phi), r*np.sin(np.arccos(costheta))*np.sin(phi), r*costheta]),  pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn)
+        print('in sim', i)
+        t0=np.zeros(len(Q))
+        trig=np.random.normal(0, Strig, 1)
+        N_glob=np.random.poisson(N)
+        ex=np.random.binomial(N_glob, 1-R)
+        recomb=np.random.binomial(N_glob-ex, 1-eta)
+        t=np.zeros(recomb+ex)
+        t[:recomb]+=np.random.choice(np.arange(1000)/5, size=recomb,  replace=True, p=f)
+        ch=np.random.choice(2, size=recomb+ex, replace=True, p=[F, 1-F])
+        t[ch==0]+=np.random.exponential(Tf, len(t[ch==0]))
+        t[ch==1]+=np.random.exponential(Ts, len(t[ch==1]))
+        slow_i=np.nonzero(ch==1)[0]
+        fast_i=np.nonzero(ch==0)[0]
+        for j in range(len(Q)):
+            ind=np.nonzero(1==np.random.choice(2, size=len(t), replace=True, p=[1-Q[j]*dS[j], Q[j]*dS[j]]))[0]
+            tj=np.random.normal(trig+T[j]+t[ind], St[j], len(ind))
+            # tj=t[ind]
+            h, bins=np.histogram(tj, bins=np.arange(201))
+            if np.any(h>0):
+                t0[j]=np.amin(np.nonzero(h>0)[0])
+            d[i,:,j]=h
+            trp[i,:,j]=np.histogram(tj[np.nonzero(np.logical_and(ind>=recomb, np.isin(ind, slow_i)))[0]], bins=np.arange(201))[0]
+            sng[i,:,j]=np.histogram(tj[np.nonzero(np.logical_and(ind>=recomb, np.isin(ind, fast_i)))[0]], bins=np.arange(201))[0]
+            Rtrp[i,:,j]=np.histogram(tj[np.nonzero(np.logical_and(ind<recomb, np.isin(ind, slow_i)))[0]], bins=np.arange(201))[0]
+            Rsng[i,:,j]=np.histogram(tj[np.nonzero(np.logical_and(ind<recomb, np.isin(ind, fast_i)))[0]], bins=np.arange(201))[0]
+        for j in range(len(Q)):
+            d[i,:,j]=np.roll(d[i,:,j], -int(np.amin(t0)))
+            trp[i,:,j]=np.roll(trp[i,:,j], -int(np.amin(t0)))
+            sng[i,:,j]=np.roll(sng[i,:,j], -int(np.amin(t0)))
+            Rtrp[i,:,j]=np.roll(Rtrp[i,:,j], -int(np.amin(t0)))
+            Rsng[i,:,j]=np.roll(Rsng[i,:,j], -int(np.amin(t0)))
+
+    spectrum=np.histogram(np.sum(np.sum(d, axis=2), axis=1), bins=np.arange(1000)-0.5)[0]
+    for k in range(200):
+        G[:,k]=np.histogram(np.sum(d[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+
+        Gtrp[:,k]=np.histogram(np.sum(trp[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+        Gsng[:,k]=np.histogram(np.sum(sng[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+        GRtrp[:,k]=np.histogram(np.sum(Rtrp[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+        GRsng[:,k]=np.histogram(np.sum(Rsng[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+
+        for j in range(len(Q)):
+            H[:,k,j]=np.histogram(d[:,k,j], bins=np.arange(np.shape(H)[0]+1)-0.5)[0]
+    return H/N_events, G/N_events, spectrum, Gtrp/N_events, Gsng/N_events, GRtrp/N_events, GRsng/N_events
+
+
+
 
 def whichPMT(costheta, phi, mid, rt, up, r):
     d=np.array([0,0,0])
@@ -120,6 +190,9 @@ def delta(t ,T, St):
 
 
 def make_dS(d, pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn):
+    if np.sum(d**2)>=1:
+        sys.exit()
+        return np.zeros(len(pmt_mid))
     dS=np.zeros(len(pmt_mid))
     ETA=np.linspace(-1,1,100, endpoint=True)
     zeta=np.linspace(-1,1,100, endpoint=True)
@@ -129,11 +202,6 @@ def make_dS(d, pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn):
             dS[i]+=np.sum(pmt_r[i]*pmt_r[i])*deta**2*np.sum((1-np.sum(d*pmt_mid[i]))/((1-2*np.sum(d*pmt_mid[i])+np.sum(d*d)-2*eta*np.sum(d*pmt_r[i])-2*zeta*np.sum(d*pmt_up[i])
                             +eta**2*np.sum(pmt_r[i]*pmt_r[i])+zeta**2*np.sum(pmt_up[i]*pmt_up[i]))**(3/2)))
     return dS/(4*np.pi)
-
-pmts=[0,1,4,7,8,14]
-
-pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn, r=make_pmts(pmts)
-dS=make_dS(np.array([0,0,0]),  pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn)
 
 def Const(tau,T,s):
     C=1/(1-erf(s/(np.sqrt(2)*tau)+T/(np.sqrt(2)*s))+np.exp(-s**2/(2*tau**2)-T/tau)*(1+erf(T/(np.sqrt(2)*s))))
@@ -174,6 +242,7 @@ def Recomb(t, F, Tf, Ts, T, St, a, eta):
 
 
 def make_3D(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
+    dS=make_dS(np.array([0, 0, 0]),  pmt_mid, pmt_r, pmt_l, pmt_up, pmt_dn)
     dt=t[1]-t[0]
     r=np.arange(t[0], t[-1]+dt, dt/100)
     dr=r[1]-r[0]

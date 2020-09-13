@@ -4,7 +4,7 @@ from scipy.optimize import curve_fit
 from scipy.stats import poisson, binom
 from scipy.special import factorial, comb, erf, expi
 from scipy.special import comb
-from PMTgiom import whichPMT
+from PMTgiom import whichPMT, make_dS
 from scipy.signal import convolve2d
 
 
@@ -172,7 +172,7 @@ def Sim(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs, mu, x1, x2, left, right):
 
     v=make_v(N_events, mu, x1, x2)
     for i in range(N_events):
-        print(i, 'out of', N_events)
+        # print(i, 'out of', N_events)
         t0=np.zeros(len(Q))
         trig=np.random.normal(0, Strig, 1)
         N_glob=np.random.poisson(N)
@@ -242,3 +242,69 @@ def Sim(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs, mu, x1, x2, left, right):
         for j in range(len(Q)):
             H[:,k,j]=np.histogram(d[:,k,j], bins=np.arange(np.shape(H)[0]+1)-0.5)[0]
     return H/len(ind), spectra/len(ind), cov/len(ind), G/len(ind), Gtrp/len(ind), Gsng/len(ind), GRtrp/len(ind), GRsng/len(ind), len(ind)
+
+
+
+def make_3D(N, F, Tf, Ts, R, a, eta, Q, T, St, PEs, mu, x1, x2, Xcov):
+    v=make_v(10000, mu, x1, x2)
+    V_mash, dS=make_dS(v)
+    t=np.arange(200)
+    dt=1
+    r=np.arange(t[0], t[-1]+dt, dt/100)
+    dr=r[1]-r[0]
+    n=np.arange(np.floor(N-3*np.sqrt(N)), np.ceil(N+3*np.sqrt(N)))
+    pois=poisson.pmf(n,N)
+    nu=np.arange(20)
+    model=np.sum(((1-R)*Promt(r, F, Tf, Ts, T, St)+R*(1-eta)*Recomb(r, F, Tf, Ts, T, St,a,eta)).reshape(len(t), 100, len(T)), axis=1)
+    frac=np.sum(model[:int(np.mean(T)+100)], axis=0)
+    if np.any(model<0):
+        return np.amin(model)*np.ones((len(nu), 100, len(Q)))
+    I=np.arange(len(nu)*len(Q)*len(t)*len(n))
+    B=np.zeros((len(nu), len(Q), len(t), len(n)))
+    s=np.zeros((len(PEs), len(Q), len(n)))
+    for i in range(len(V_mash)):
+        print('in B', i)
+        B+=binom.pmf(nu[I//(len(Q)*len(t)*len(n))], (n[I%len(n)]).astype(int),
+            dS[i, (I//(len(n)*len(t)))%len(Q)]*Q[(I//(len(n)*len(t)))%len(Q)]*model[(I//len(n))%len(t),(I//(len(n)*len(t)))%len(Q)]).reshape(len(nu), len(Q), len(t), len(n))*V_mash[i]
+        if np.any(np.isnan(B)):
+            print('B is nan')
+            print(i, N, F, Tf, Ts, R, a, eta, Q, T, St, dS, PEs, V_mash, V_mash)
+            sys.exit()
+        if np.any(np.isinf(B)):
+            print('B is inf')
+            print(i, N, F, Tf, Ts, R, a, eta, Q, T, St, dS, PEs, V_mash, V_mash)
+            sys.exit()
+    B[np.logical_and(B>1, B<1+1e-6)]=1
+    if np.any(1-B<0):
+        print('B>1')
+        print(B[1-B<0])
+        print(N, F, Tf, Ts, R, a, eta, Q, T, St, dS, PEs, V_mash, V_mash)
+        sys.exit()
+
+    I=np.arange(len(PEs)*len(Q)*len(n)*len(V_mash))
+    s=binom.pmf(PEs[I//(len(Q)*len(n)*len(V_mash))], (n[(I//len(V_mash))%len(n)]).astype(int), dS[I%len(V_mash), (I//(len(n)*len(V_mash)))%len(Q)]*Q[(I//(len(n)*len(V_mash)))%len(Q)]
+        *frac[(I//(len(n)*len(V_mash)))%len(Q)]).reshape(len(PEs),len(Q), len(n), len(V_mash))
+    S=np.sum(np.sum(s*V_mash, axis=-1)*pois, axis=-1)
+
+    M=np.sum(S.T*PEs, axis=1)
+    Mcov=np.zeros((len(Xcov),15))
+    k=0
+    for i in range(5):
+        for j in range(i+1,6):
+            for p1, pe1 in enumerate(PEs):
+                for p2, pe2 in enumerate(PEs):
+                    c=(pe1-M[i])*(pe2-M[j])/(M[i]*M[j])
+                    if np.abs(c)<=0.1:
+                        Mcov[np.argmin(np.abs(c-Xcov)), k]+=np.sum(np.sum(s[p1,i]*s[p2,j]*V_mash, axis=-1)*pois, axis=-1)
+            k+=1
+
+    P0=np.vstack((np.ones(len(n)), np.cumprod(np.prod(B[0], axis=0), axis=0)[:-1]))
+    P1=(P0*(1-np.prod(B[0], axis=0)))
+    P=np.zeros((100,len(nu),len(Q)))
+    for i in range(len(Q)):
+        P2=P0*(1-np.prod(B[0, np.delete(np.arange(len(Q)), i)], axis=0))
+        P[0,0,i]=np.sum(np.sum(B[0,i]*P2*pois, axis=1), axis=0)
+    P[0,1:]=np.sum(np.sum(B[1:]*P0*pois, axis=3), axis=2)
+    for i in range(1, 100):
+        P[i]=np.sum(np.sum(B[:,:,i:,:]*P1[:len(t)-i,:]*pois, axis=3), axis=2)
+    return np.transpose(P, (1,0,2)), S, Mcov

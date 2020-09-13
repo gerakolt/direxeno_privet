@@ -11,7 +11,7 @@ from scipy.special import erf as erf
 
 
 pmts=[0,1,4,7,8,14]
-path='/home/gerak/Desktop/DireXeno/190803/Co57/EventRecon/'
+path='/home/gerak/Desktop/DireXeno/190803/Co57B/EventRecon/'
 rec=np.load(path+'recon1ns.npz')['rec']
 blw_cut=15
 init_cut=20
@@ -40,10 +40,10 @@ G=np.zeros((300, 200))
 for j in range(200):
     G[:,j]=np.histogram(np.sum(rec['h'][:,j,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
 
-spectra=np.zeros((350, len(pmts)))
+spectra=np.zeros((100, len(pmts)))
 for i, pmt in enumerate(pmts):
     h=rec['h'][:,:,i]
-    spectra[:,i]=np.histogram(np.sum(h[:,:100], axis=1), bins=np.arange(351)-0.5)[0]
+    spectra[:,i]=np.histogram(np.sum(h[:,:100], axis=1), bins=np.arange(np.shape(spectra)[0]+1)-0.5)[0]
     for j in range(200):
         H[:,j,i]=np.histogram(h[:,j], bins=np.arange(np.shape(H)[0]+1)-0.5)[0]
 

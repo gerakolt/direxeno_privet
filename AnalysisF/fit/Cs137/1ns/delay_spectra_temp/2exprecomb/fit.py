@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import os
-from fun import Sim, q0_model, make_P, model_area, make_3D
+from fun import Sim, Sim2, q0_model, make_P, model_area, make_3D
 import sys
 from scipy.optimize import minimize
 from scipy.stats import poisson, binom
@@ -180,17 +180,17 @@ def L(p):
     return -l
 
 
-rec[0]=([0.21537128,  0.14399147,  0.13457826,  0.20935095,  0.1962309,   0.37744515],
- [41.56126284, 41.65504493, 42.20686561, 43.39193013, 41.63506245, 42.1523902],
- [ 0.74358323,  1.11303201,  1.34520329,  1.95492766,  0.94264498,  1.10002631],
-  0.10859021,  1.97690138, 39.970927,    0.57290201,  0.33058596,  0.39326104)
+rec[0]=([0.19657476,  0.13754033,  0.12743771,  0.18797336,  0.17835696,  0.3510241],
+ [42.00312603, 42.07819445, 42.03561186, 42.05469875, 42.03181254 ,42.13596326],
+  [0.94580769,  0.61208912,  0.84663691,  1.25148529,  0.78060014,  0.59422144],
+  0.09440092,  2.06581567, 37.59474049,  0.68417731,  0.454177,    0.19242887)
 
 
 # p=minimize(L, make_ps(rec_to_p(rec)))
 # rec=p_to_rec(p.x)
 
 m=make_3D(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
-s, GS, GS_spectrum, Gtrp, Gsng, GRtrp, GRsng=Sim(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
+s, GS, GS_spectrum, Gtrp, Gsng, GRtrp, GRsng=Sim2(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['a'][0], rec['eta'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
 
 fig, ax=plt.subplots(2,3)
 for i in range(len(pmts)):

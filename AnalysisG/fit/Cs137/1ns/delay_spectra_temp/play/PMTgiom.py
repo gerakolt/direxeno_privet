@@ -39,21 +39,4 @@ def make_pmts(PMTs):
         pmt_l[i]=[0.5*r*b/np.sqrt(a**2+b**2),-0.5*r*a/np.sqrt(a**2+b**2), 0]
         pmt_up[i]=np.cross(pmt_mid[pmt], pmt_r[i])
         pmt_dn[i]=np.cross(pmt_mid[pmt], pmt_l[i])
-    return pmt_mid[PMTs], pmt_r, pmt_l, pmt_up, pmt_dn, r
-
-
-def make_pmts_try():
-    # r=21/40
-    r=2
-    mid=np.array([[1,0,0],[0,1,0], [-1,0,0], [0,-1,0], [0,0,1], [0,0,-1]])
-    rt=np.ones_like(mid)
-    up=np.ones_like(mid)
-    rt[:-2]=np.cross(mid[:-2], np.array([0,0,1]))
-    rt[-2:]=np.cross(mid[-2:], np.array([0,1,0]))
-    # up[[0,2]]=np.cross(mid[[0,2]], np.array([0,1,0]))
-    # up[[1,3,4,5]]=np.cross(mid[[1,3,4,5]], np.array([0,1,0]))
-    up=np.cross(mid, rt)
-    rt=(r*rt.T/np.sqrt(np.sum(rt**2, axis=1))/2).T
-    up=(r*up.T/np.sqrt(np.sum(up**2, axis=1))/2).T
-
-    return mid, rt, up
+    return pmt_mid[PMTs], pmt_r, pmt_l, pmt_up, pmt_dn

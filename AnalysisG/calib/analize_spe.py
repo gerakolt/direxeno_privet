@@ -6,7 +6,7 @@ import matplotlib.colors as mcolors
 def func(x, a_pad, a, m_pad, s_pad, m, s):
     return a_pad*np.exp(-0.5*(x-m_pad)**2/s_pad**2)+a*np.exp(-0.5*(x-m)**2/s**2)
 
-pmt=0
+pmt=14
 path='/home/gerak/Desktop/DireXeno/190803/pulser/PMT{}/'.format(pmt)
 data=np.load(path+'cuts.npz')
 blw_cut=data['blw_cut']

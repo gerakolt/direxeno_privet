@@ -10,6 +10,7 @@ from scipy.special import erf as erf
 import warnings
 from minimize import minimize, make_ps
 
+
 pmts=[0,1,4,7,8,14]
 
 
@@ -38,12 +39,12 @@ right=data['right']
 t=np.arange(200)
 dt=t[1]-t[0]
 
-path='/home/gerak/Desktop/DireXeno/190803/BG/EventRecon/'
-data=np.load(path+'H.npz')
-H_BG=data['H']*T_CsB/T_BG
-G_BG=data['G']*T_CsB/T_BG
-spectrum_BG=data['spectrum']*T_CsB/T_BG
-spectra_BG=data['spectra']*T_CsB/T_BG
+# path='/home/gerak/Desktop/DireXeno/190803/BG/EventRecon/'
+# data=np.load(path+'H.npz')
+# H_BG=data['H']*T_CsB/T_BG
+# G_BG=data['G']*T_CsB/T_BG
+# spectrum_BG=data['spectrum']*T_CsB/T_BG
+# spectra_BG=data['spectra']*T_CsB/T_BG
 
 
 N=60*662
@@ -143,29 +144,27 @@ def L(p):
     if -l<l_min:
         l_min=-l
         np.savez('best_p', p=p, l_min=l_min)
-        print('$$$$$$$$$$$ NEW best p $$$$$$$$$$$$$$$$$$$$')
-    if True:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        print('iteration=', int(counter/(len(p)+1)), 'fanc=',-l)
-        print('--------------------------------')
-        print(rec)
+        # print('$$$$$$$$$$$ NEW best p $$$$$$$$$$$$$$$$$$$$')
+    # if True:
+        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        # print('iteration=', int(counter/(len(p)+1)), 'fanc=',-l)
+        # print('--------------------------------')
+        # print(rec)
     params=np.vstack((params, np.append(p[-5:], -l)))
     np.savez('params', params=params)
     return -l
 
 
-rec[0]=([0.14685638,  0.10045173,  0.09561803,  0.14333477,  0.13396003,  0.26760133],
- [42.59471874, 42.59409221, 43.06454332, 42.72545027, 42.78632866, 42.62667801],
-  [0.79460959,  0.79667333,  0.80893177,  0.84008925,  0.80723421,  0.7753666],
-  0.05890449,  0.98721344, 30.34007147,  0.40770947,  2.02969118)
-# print(L(rec_to_p(rec)))
-# p=minimize(L, rec_to_p(rec), method='Nelder-Mead', options={'disp':True, 'maxfev':100000})
+rec[0]=([0.15031393,  0.10126694,  0.0980743,   0.15169108,  0.13757894,  0.27692865],
+ [42.6965627,  42.79534384, 42.98685503, 42.85373486, 42.54194199, 42.92884848],
+  [0.85148873,  0.82144334,  0.75498879,  0.84165176,  1.09559689,  0.82225653],
+  0.10919454,  1.65475904, 32.72410862,  0.51185353,  5.27711599)
 
-p=minimize(L, make_ps(rec_to_p(rec)))
-rec=p_to_rec(p.x)
+# p=minimize(L, make_ps(rec_to_p(rec)))
+# rec=p_to_rec(p.x)
 
 m=make_3D(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['b'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
-s, GS, GS_spectrum=Sim(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['b'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
+s, GS, GS_spectrum, Gtrp, Gsng, GRtrp, GRsng=Sim(t, N, rec['F'][0], rec['Tf'][0], rec['Ts'][0], rec['R'][0], rec['b'][0], rec['Q'][0], rec['T'][0], rec['St'][0])
 
 
 fig, ax=plt.subplots(2,3)
@@ -185,7 +184,7 @@ model=poisson.pmf(PEs[I//len(lmda)], lmda[I%len(lmda)]).reshape(len(PEs), len(lm
 model=model/np.amax(model, axis=0)*np.amax(spectra, axis=0)
 for i in range(len(pmts)):
     np.ravel(ax)[i].plot(PEs, spectra[:,i], 'ko', label='spectrum - PMT{}'.format(pmts[i]))
-    np.ravel(ax)[i].step(PEs, spectra_BG[:,i], label='BG'.format(pmts[i]))
+    # np.ravel(ax)[i].step(PEs, spectra_BG[:,i], label='BG'.format(pmts[i]))
     np.ravel(ax)[i].plot(PEs, model[:,i], 'r-.')
     np.ravel(ax)[i].legend()
 

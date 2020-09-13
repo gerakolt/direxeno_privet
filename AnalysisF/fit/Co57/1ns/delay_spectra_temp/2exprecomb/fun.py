@@ -13,10 +13,10 @@ from scipy.signal import convolve2d
 
 
 
-def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
+def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St, PEs):
     f=np.sum(make_recomb(np.arange(1000*20)/100, a, eta).reshape(1000,20), axis=1)
     f[-1]=1-np.sum(f[:-1])
-    N_events=200
+    N_events=2000
     Strig=2
     d=np.zeros((N_events, 200, len(Q)))
     H=np.zeros((30, 200, len(Q)))
@@ -29,6 +29,7 @@ def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
     Gsng=np.zeros((250,200))
     GRtrp=np.zeros((250,200))
     GRsng=np.zeros((250,200))
+    spectra=np.zeros((len(PEs),len(Q)))
     for i in range(N_events):
         print('in sim', i)
         t0=np.zeros(len(Q))
@@ -62,7 +63,9 @@ def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
             Rtrp[i,:,j]=np.roll(Rtrp[i,:,j], -int(np.amin(t0)))
             Rsng[i,:,j]=np.roll(Rsng[i,:,j], -int(np.amin(t0)))
 
-    spectrum=np.histogram(np.sum(np.sum(d, axis=2), axis=1), bins=np.arange(1000)-0.5)[0]
+    spectrum=np.histogram(np.sum(np.sum(d[:,:100,:], axis=2), axis=1), bins=np.arange(1000)-0.5)[0]
+    for i in range(len(Q)):
+        spectra[:,i]=np.histogram(np.sum(d[:,:100,i], axis=1), bins=np.arange(len(PEs)+1)-0.5)[0]
     for k in range(200):
         G[:,k]=np.histogram(np.sum(d[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
 
@@ -73,7 +76,7 @@ def Sim(t, N, F, Tf, Ts, R, a, eta, Q, T, St):
 
         for j in range(len(Q)):
             H[:,k,j]=np.histogram(d[:,k,j], bins=np.arange(np.shape(H)[0]+1)-0.5)[0]
-    return H/N_events, G/N_events, spectrum, Gtrp/N_events, Gsng/N_events, GRtrp/N_events, GRsng/N_events
+    return H/N_events, G/N_events, spectrum, spectra, Gtrp/N_events, Gsng/N_events, GRtrp/N_events, GRsng/N_events
 
 
 

@@ -5,7 +5,7 @@ import os
 
 pmts=[0,1,4,7,8,14]
 
-path='/home/gerak/Desktop/DireXeno/190803/Co57B/EventRecon/'
+path='/home/gerak/Desktop/DireXeno/190803/Cs137B/EventRecon/'
 blw_cut=15
 init_cut=20
 chi2_cut=5000

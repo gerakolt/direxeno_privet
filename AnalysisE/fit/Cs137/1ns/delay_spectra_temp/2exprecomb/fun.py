@@ -12,12 +12,59 @@ from scipy.signal import convolve2d
 
 
 
+# def Sim(t, N, F, Tf, Ts, R, b, Q, T, St):
+#     N_events=10000
+#     Strig=2
+#     d=np.zeros((N_events, 200, len(Q)))
+#     H=np.zeros((50, 200, len(Q)))
+#     G=np.zeros((250,200))
+#     for i in range(N_events):
+#         print('in sim', i)
+#         t0=np.zeros(len(Q))
+#         trig=np.random.normal(0, 5*Strig, 1)
+#         N_glob=np.random.poisson(N)
+#         ch=np.random.choice(2, size=N_glob, replace=True, p=[F, 1-F])
+#         rcmb=np.random.choice(2, size=N_glob, replace=True, p=[R, 1-R])
+#         nf=len(np.nonzero(ch==0)[0])
+#         ns=len(np.nonzero(ch==1)[0])
+#         rcmb_i=np.nonzero(rcmb==0)[0]
+#         u=np.random.uniform(size=len(rcmb_i))
+#         rcmb_t=b*(u/(1-u))
+#         tf=np.random.exponential(5*Tf, nf)
+#         ts=np.random.exponential(5*Ts, ns)
+#         t=np.append(tf, ts)
+#         t[rcmb_i]+=5*rcmb_t
+#         for j in range(len(Q)):
+#             ind=np.nonzero(1==np.random.choice(2, size=len(t), replace=True, p=[1-Q[j]*dS[j], Q[j]*dS[j]]))[0]
+#             tj=np.random.normal(trig+5*T[j]+t[ind], 5*St[j], len(ind))
+#             h, bins=np.histogram(tj, bins=np.arange(201)*5)
+#             if np.any(h>0):
+#                 t0[j]=np.amin(np.nonzero(h>0)[0])
+#             d[i,:,j]=h
+#         for j in range(len(Q)):
+#             d[i,:,j]=np.roll(d[i,:,j], -int(np.amin(t0)))
+#     spectrum=np.histogram(np.sum(np.sum(d, axis=2), axis=1), bins=np.arange(1000)-0.5)[0]
+#     for k in range(200):
+#         G[:,k]=np.histogram(np.sum(d[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+#         for j in range(len(Q)):
+#             H[:,k,j]=np.histogram(d[:,k,j], bins=np.arange(np.shape(H)[0]+1)-0.5)[0]
+#     return H/N_events, G/N_events, spectrum
+
+
 def Sim(t, N, F, Tf, Ts, R, b, Q, T, St):
     N_events=10000
     Strig=2
     d=np.zeros((N_events, 200, len(Q)))
     H=np.zeros((50, 200, len(Q)))
     G=np.zeros((250,200))
+    trp=np.zeros((N_events, 200, len(Q)))
+    sng=np.zeros((N_events, 200, len(Q)))
+    Rtrp=np.zeros((N_events, 200, len(Q)))
+    Rsng=np.zeros((N_events, 200, len(Q)))
+    Gtrp=np.zeros((250,200))
+    Gsng=np.zeros((250,200))
+    GRtrp=np.zeros((250,200))
+    GRsng=np.zeros((250,200))
     for i in range(N_events):
         print('in sim', i)
         t0=np.zeros(len(Q))
@@ -25,14 +72,16 @@ def Sim(t, N, F, Tf, Ts, R, b, Q, T, St):
         N_glob=np.random.poisson(N)
         ch=np.random.choice(2, size=N_glob, replace=True, p=[F, 1-F])
         rcmb=np.random.choice(2, size=N_glob, replace=True, p=[R, 1-R])
-        nf=len(np.nonzero(ch==0)[0])
-        ns=len(np.nonzero(ch==1)[0])
+        # nf=len(np.nonzero(ch==0)[0])
+        # ns=len(np.nonzero(ch==1)[0])
         rcmb_i=np.nonzero(rcmb==0)[0]
         u=np.random.uniform(size=len(rcmb_i))
         rcmb_t=b*(u/(1-u))
-        tf=np.random.exponential(5*Tf, nf)
-        ts=np.random.exponential(5*Ts, ns)
-        t=np.append(tf, ts)
+        # tf=np.random.exponential(5*Tf, nf)
+        # ts=np.random.exponential(5*Ts, ns)
+        t=np.zeros(N_glob)
+        t[ch==0]=np.random.exponential(5*Tf, len(np.nonzero(ch==0)[0]))
+        t[ch==1]=np.random.exponential(5*Ts, len(np.nonzero(ch==1)[0]))
         t[rcmb_i]+=5*rcmb_t
         for j in range(len(Q)):
             ind=np.nonzero(1==np.random.choice(2, size=len(t), replace=True, p=[1-Q[j]*dS[j], Q[j]*dS[j]]))[0]
@@ -43,12 +92,25 @@ def Sim(t, N, F, Tf, Ts, R, b, Q, T, St):
             d[i,:,j]=h
         for j in range(len(Q)):
             d[i,:,j]=np.roll(d[i,:,j], -int(np.amin(t0)))
+
+            trp[i,:,j]=np.roll(np.histogram(tj[np.nonzero(np.logical_and(ch[ind]==1, rcmb[ind]==1))[0]], bins=np.arange(201)*5)[0], -int(np.amin(t0)))
+            sng[i,:,j]=np.roll(np.histogram(tj[np.nonzero(np.logical_and(ch[ind]==0, rcmb[ind]==1))[0]], bins=np.arange(201)*5)[0], -int(np.amin(t0)))
+            Rtrp[i,:,j]=np.roll(np.histogram(tj[np.nonzero(np.logical_and(ch[ind]==1, rcmb[ind]==0))[0]], bins=np.arange(201)*5)[0], -int(np.amin(t0)))
+            Rsng[i,:,j]=np.roll(np.histogram(tj[np.nonzero(np.logical_and(ch[ind]==0, rcmb[ind]==0))[0]], bins=np.arange(201)*5)[0], -int(np.amin(t0)))
+
+
     spectrum=np.histogram(np.sum(np.sum(d, axis=2), axis=1), bins=np.arange(1000)-0.5)[0]
     for k in range(200):
         G[:,k]=np.histogram(np.sum(d[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+
+        Gtrp[:,k]=np.histogram(np.sum(trp[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+        Gsng[:,k]=np.histogram(np.sum(sng[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+        GRtrp[:,k]=np.histogram(np.sum(Rtrp[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+        GRsng[:,k]=np.histogram(np.sum(Rsng[:,k,:], axis=1), bins=np.arange(np.shape(G)[0]+1)-0.5)[0]
+
         for j in range(len(Q)):
             H[:,k,j]=np.histogram(d[:,k,j], bins=np.arange(np.shape(H)[0]+1)-0.5)[0]
-    return H/N_events, G/N_events, spectrum
+    return H/N_events, G/N_events, spectrum, Gtrp/N_events, Gsng/N_events, GRtrp/N_events, GRsng/N_events
 
 PMTs=[0,1,4,7,8,14]
 mid, rt, pmt_l, up, pmt_dn, r=make_pmts(PMTs)
@@ -175,7 +237,7 @@ def make_3D(t, N, F, Tf, Ts, R, b, Q, T, St):
     dr=r[1]-r[0]
     n=np.arange(np.floor(N-4*np.sqrt(N)), np.ceil(N+4*np.sqrt(N)))
     pois=poisson.pmf(n,N)
-    nu=np.arange(50)
+    nu=np.arange(30)
     model=np.sum(((1-R)*Promt(r, F, Tf, Ts, T, St)+R*Recomb(r, F, Tf, Ts, T, St,b)).reshape(len(t), 100, len(T)), axis=1)
     if np.any(model<0):
         return np.amin(model)*np.ones((len(nu), 100, len(Q)))
