@@ -7,14 +7,15 @@ import sys
 
 pmts=np.array([0,1,4,7,8,15])
 
-BGpath='/home/gerak/Desktop/DireXeno/190803/BG/EventRecon/'
+# BGpath='/home/gerak/Desktop/DireXeno/190803/BG/EventRecon/'
 path='/home/gerak/Desktop/DireXeno/190803/Co57/EventRecon/'
 blw_cut=15
 init_cut=20
 chi2_cut=5000
-left=0
-right=400
-
+left=635
+right=1000
+#T=1564823506349-1564820274767 #Cs
+T=1564916315672-1564886605156 #Co
 data=np.load(path+'recon1ns.npz')
 BG=data['rec']
 
@@ -85,23 +86,30 @@ full=np.sum(np.sum(rec['h'][:,:100,:], axis=2), axis=1)
 BGinit=np.sum(np.sum(BG['h'][:,:10,:], axis=2), axis=1)
 BGfull=np.sum(np.sum(BG['h'][:,:100,:], axis=2), axis=1)
 
-plt.figure()
+plt.figure(figsize=(20,10))
 flash_cut=0.5
-plt.hist(init/full, bins=100, range=[0,1], label='Relative number of PEs in first 10 ns')
-plt.axvline(flash_cut, 0, 1)
+plt.hist(init/full, bins=100, range=[0,1], label=r'$^{57}$'+'Co data')
+plt.axvline(flash_cut, 0, 0.25, linewidth=5, label=r'$\omega<0.5$'+'cut', color='k')
+plt.legend(fontsize=35)
+plt.xlabel(r'$\omega$', fontsize=25)
+plt.tick_params(axis='both', which='major', labelsize=20)
+print('flash rate:', len(rec[init/full>flash_cut]['id'])/(T*1e-3))
 rec=rec[init/full<flash_cut]
 BG=BG[BGinit/BGfull<flash_cut]
 
-plt.figure()
+plt.figure(figsize=(20,10))
 up=np.sum(rec['h'][:,:100,0], axis=1)+np.sum(rec['h'][:,:100,1], axis=1)
 dn=np.sum(rec['h'][:,:100,-1], axis=1)+np.sum(rec['h'][:,:100,-2], axis=1)+np.sum(rec['h'][:,:100,-3], axis=1)
-plt.plot(np.arange(450), np.arange(450)*3+18, 'k--')
+plt.plot(np.arange(450), np.arange(450)*3+18, 'k--', linewidth=5, label=r'$N_{bot}<3N_{top}+18$'+'\ncut')
 plt.hist2d(up, dn, bins=[100, 100], range=[[0,350], [0,700]], norm=mcolors.PowerNorm(0.3))
 plt.xlabel('Sum of PEs in the top floor PMTs', fontsize=25)
 plt.ylabel('Sum of PEs in the bottom floor PMTs', fontsize=25)
+plt.tick_params(axis='both', which='major', labelsize=20)
+cbar=plt.colorbar()
+cbar.ax.tick_params(labelsize=25)
 rec0=rec
 rec=rec[dn<3*up+18]
-plt.legend(fontsize=15)
+plt.legend(fontsize=35, loc='upper right')
 
 TB=1564926608911-1564916365644
 TA=1564916315672-1564886605156

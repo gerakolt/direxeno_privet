@@ -16,7 +16,7 @@ from PMTgiom import whichPMT
 
 def Sim_fit(x1, x2, left, right, gamma, Q, T ,St, W, std, nLXe, sigma_smr, mu, R, a, F, Tf, Ts, Bins, bins):
     spectra=np.zeros((len(bins)-1, len(Q)))
-    N_events=1000
+    N_events=100
     H=np.zeros((15,100,len(Q)))
     G=np.zeros((50, 100))
     N=np.array([]).astype(int)
@@ -96,9 +96,11 @@ def make_d(iter):
     vs=np.repeat(v, N).reshape(3, N)
     count=np.zeros(N)
     while np.any(np.sqrt(np.sum(vs**2, axis=0))<0.75):
+
         absorb=np.nonzero(count>10)[0]
         vs[0,absorb]=2
         us[:,absorb]=vs[:,absorb]
+
         ind_LXe=np.nonzero(np.sqrt(np.sum(vs**2, axis=0))<=0.25)[0]
         ind_toLXe=np.nonzero(np.logical_and(np.sqrt(np.sum(vs**2, axis=0))>0.25, np.sum(vs*us, axis=0)<=0))[0]
         ind_toVac=np.nonzero(np.logical_and(np.logical_and(np.sqrt(np.sum(vs**2, axis=0))<0.75, np.sqrt(np.sum(vs**2, axis=0))>0.25), np.sum(vs*us, axis=0)>0))[0]

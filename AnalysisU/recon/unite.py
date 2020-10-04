@@ -7,7 +7,7 @@ import sys
 
 pmts=np.array([0,1,4,7,8,15])
 
-path='/home/gerak/Desktop/DireXeno/190803/BG/EventRecon/'
+path='/home/gerak/Desktop/DireXeno/190803/Cs137B/EventRecon/'
 Rec=np.recarray(100000, dtype=[
     ('area', 'i8', len(pmts)),
     ('blw', 'f8', len(pmts)),

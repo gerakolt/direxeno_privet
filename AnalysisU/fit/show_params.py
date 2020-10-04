@@ -14,7 +14,7 @@ data=np.load('Q-1_0.npz')
 ps=data['ps']
 ls=data['ls']
 T=data['T']
-print('Time for iter:', T/len(ls))
+print('Time for iter:', T/len(ls), '({} iterations)'.format(len(ls)))
 ps=ps[:len(ls)]
 
 ps0=ps[ls>1e8]
@@ -26,7 +26,8 @@ print(data['note'])
 print(np.amin(ls))
 print(ps[np.argmin(ls)])
 
-names=['Q0', 'Q1', 'Q2', 'Q3','Q4','Q5', 'T0', 'T1', 'T2', 'T3','T4','T5', 'ST0', 'ST1', 'ST2', 'ST3','ST4','ST5', 'NbgA', 'NbgB', 'W', 'std', 'nLXe', 'sigma_smr', 'mu', 'R', 'a', 'F', 'Tf', 'Ts']
+names=['Q0', 'Q1', 'Q2', 'Q3','Q4','Q5', 'Sa0', 'Sa1', 'Sa2', 'Sa3','Sa4','Sa5', 'T0', 'T1', 'T2', 'T3','T4','T5', 'NbgA', 'NbgB', 'W', 'std', 'nLXe',
+    'sigma_smr', 'mu', 'R', 'a', 'F', 'Tf', 'Ts']
 
 
 for i in range(len(ps[0])):

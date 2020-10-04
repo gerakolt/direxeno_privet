@@ -25,18 +25,31 @@ note='Only spectrum only Q, 60 bins of width 1, only one side, 10k events per si
 #         delay_hs.append(data['h'])
 #         names.append('{}_{}'.format(pmts[i], pmts[j]))
 #
+# path='/home/gerak/Desktop/DireXeno/190803/pulser/DelayRecon/'
+# delays=[]
+# for pmt in pmts:
+#     if pmt!=14:
+#         data=np.load(path+'delay_hist{}-14.npz'.format(pmt))
+#         delays.append(data['m'])
+#     else:
+#         delays.append(0)
+# path='/home/gerak/Desktop/DireXeno/190803/pulser/EventRecon/'
+# data=np.load(path+'delay_list.npz')
+# HDelay=data['HDelay']
+# BinsDelay=data['BinsDelay']
 
-Abins=[]
-Areas=np.zeros((len(pmts), 14))
-for i, pmt in enumerate(pmts):
-    try:
-        path='/home/gerak/Desktop/DireXeno/190803/pulser/PMT{}/'.format(pmt)
-        data=np.load(path+'areas.npz')
-    except:
-        path='/storage/xenon/gerak/pulser/PMT{}/'.format(pmt)
-        data=np.load(path+'areas.npz')
-    Areas[i]=data['Areas']
-    Abins.append(data['Abins'])
+
+# Abins=[]
+# Areas=np.zeros((len(pmts), 14))
+# for i, pmt in enumerate(pmts):
+#     try:
+#         path='/home/gerak/Desktop/DireXeno/190803/pulser/PMT{}/'.format(pmt)
+#         data=np.load(path+'areas.npz')
+#     except:
+#         path='/storage/xenon/gerak/pulser/PMT{}/'.format(pmt)
+#         data=np.load(path+'areas.npz')
+#     Areas[i]=data['Areas']
+#     Abins.append(data['Abins'])
 
 source='Co57'
 try:
@@ -98,7 +111,7 @@ dt=1
 
 counter=0
 ls=[]
-ps=np.zeros((15000, 6))
+ps=np.zeros((2000, 6))
 t0=time.time()
 t1=time.time()
 def L(p, pmt, q, ps, ls, ID):

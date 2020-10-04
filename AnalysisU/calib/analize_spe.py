@@ -13,7 +13,7 @@ left=data['left']
 right=data['right']
 # BL=np.load(path+'BL.npz')['BL']
 BL=np.zeros(1000)
-dh3_cut=0.5
+dh3_cut=0.66
 spk_cut=64
 
 data=np.load(path+'spe.npz')
